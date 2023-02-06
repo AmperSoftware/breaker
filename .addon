@@ -1,0 +1,29 @@
+{
+  "Title": "Breaker - Admin System",
+  "Type": "addon",
+  "Org": "based",
+  "Ident": "breaker",
+  "Tags": "",
+  "Schema": 1,
+  "HasAssets": false,
+  "AssetsPath": "",
+  "ResourcePaths": null,
+  "HasCode": true,
+  "CodePath": "/code/",
+  "Metadata": {
+    "PrimaryAsset": "",
+    "PhysicsMins": "-1,-1,-1",
+    "PhysicsMaxs": "1,1,1",
+    "RenderMins": "-1,-1,-1",
+    "RenderMaxs": "-1,-1,-1",
+    "Summary": "A player and permission management system",
+    "Description": "",
+    "Public": false,
+    "ReplaceTags": "admin permissions management server community",
+    "Compiler": {
+      "RootNamespace": "Breaker",
+      "DefineConstants": "SANDBOX;ADDON;DEBUG",
+      "NoWarn": "1701;1702;1591;"
+    }
+  }
+}
