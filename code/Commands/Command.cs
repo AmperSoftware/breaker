@@ -153,6 +153,16 @@ namespace Breaker
 
 			return cmd.Method.Parameters;
 		}
+		public static PermissionAttribute[] Permissions(string name)
+		{
+			if ( !commands.TryGetValue( name, out var cmd ) )
+			{
+				Log.Error( $"Tried to get required permissions of command {name} which does not exist!" );
+				return default;
+			}
+
+			return cmd.Method.Attributes.OfType<PermissionAttribute>().ToArray();
+		}
 	}
 	[AttributeUsage( AttributeTargets.Method )]
 	public class CommandAttribute : Attribute

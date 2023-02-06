@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Breaker
 {
-	public static class Util
+	public static class Program
 	{
-		public static void LogInfo(object message)
+		public static void OnLoad()
 		{
-			Log.Info( $"[Breaker] {message}" );
+			//Game.Clients
 		}
 	}
 }
