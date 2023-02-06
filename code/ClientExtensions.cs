@@ -9,17 +9,13 @@ namespace Breaker
 {
 	public static class ClientExtensions
     {
-		public static IEnumerable<string> GetPermissions( this IClient client )
-		{
-			return new string[] { "breaker.menu" };
-		}
 		public static bool HasPermission( this IClient client, string permission )
 		{
-			var permissions = GetPermissions( client );
-			if ( permissions.Contains( permission ) )
-				return true;
-			
-			return client.IsListenServerHost;
+			return Permission.Has( client, permission );
+		}
+		public static void ExecuteCommand(this IClient client, string command, string[] args)
+		{
+			Command.Execute( command, client, args );
 		}
 	}
 }

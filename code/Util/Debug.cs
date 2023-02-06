@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Breaker.Util
+namespace Breaker
 {
 	public static class Debug
 	{

@@ -51,6 +51,8 @@ namespace Breaker
 						Log.Error( $"Tried to register command with duplicate name {name}!" );
 						continue;
 					}
+
+					Debug.Log( $"Registering command {name}." );
 					commands.Add( name, new( attribute, method ) );
 				}
 			}
@@ -62,7 +64,7 @@ namespace Breaker
 		/// <param name="client">The client that executed the command.</param>
 		/// <param name="command">The command to execute.</param>
 		/// <param name="args">The arguments to pass to the command.</param>
-		public static void Execute( string command, IClient client, string[] args )
+		public static void Execute( string command, IClient client, string[] args)
 		{
 			if ( !commands.TryGetValue( command, out var info ) )
 			{
@@ -87,41 +89,72 @@ namespace Breaker
 			ParameterInfo[] parameters = method.Parameters;
 			
 			int parameterCount = parameters.Length;
-			int argsCount = args.Length;
-			if ( parameterCount != argsCount )
+			int requiredParameters = parameterCount - parameters.Count( p => p.DefaultValue != null );
+			if(requiredParameters > 0 || parameterCount > 0 && args.Length > 0)
 			{
-				Log.Error( $"Tried to execute command {command} but the parameter count doesn't match the argument count!" );
-				return;
-			}
-			
-			var parameterTypes = parameters.Select( p => p.ParameterType );
-			var parameterValues = new object[parameterCount];
-			for ( int i = 0; i < parameterCount; i++ )
-			{
-				var type = parameterTypes.ElementAt( i );
-				var argument = args[i];
-
-				object value = null;
-				if ( !type.IsAssignableFrom( argument.GetType() ) )
+				if(args == default)
 				{
-					value = Convert.ChangeType( argument, type );
-					if ( value == null )
+					Log.Error( $"Tried to execute command {command} but it requires arguments!" );
+					return;
+				}
+
+				int argsCount = args.Length;
+				if ( parameterCount != argsCount )
+				{
+					Log.Error( $"Tried to execute command {command} but the parameter count doesn't match the argument count!" );
+					return;
+				}
+
+				var parameterTypes = parameters.Select( p => p.ParameterType );
+				var parameterValues = new object[parameterCount];
+				for ( int i = 0; i < parameterCount; i++ )
+				{
+					var type = parameterTypes.ElementAt( i );
+					var argument = args[i];
+
+					object value = null;
+					if ( !type.IsAssignableFrom( argument.GetType() ) )
 					{
-						Log.Error( $"Tried to execute command {command} but the argument {argument} couldn't be converted to {type}!" );
-						return;
+						value = Convert.ChangeType( argument, type );
+						if ( !type.IsAssignableFrom( value.GetType() ) )
+						{
+							Log.Error( $"Tried to execute command {command} but the argument {argument} couldn't be converted to {type}!" );
+							return;
+						}
 					}
-				}
-				else
-				{
-					value = argument;
+					else
+					{
+						value = argument;
+					}
+
+					parameterValues[i] = value;
 				}
 
-				parameterValues[i] = value;
+				Debug.Log( $"Executing {command} with parameters" );
+				foreach(var p in parameters)
+				{
+					Debug.Log( $"- {p}" );
+				}
+
+				method.Invoke( null, parameterValues );
+			}
+			else
+			{
+				method.Invoke( null, null );
+			}
+		}
+		public static ParameterInfo[] Parameters( string name )
+		{
+			if(!commands.TryGetValue(name, out var cmd))
+			{
+				Log.Error( $"Tried to get parameters of command {name} which does not exist!" );
+				return default;
 			}
 
-			method.Invoke( null, parameters );
+			return cmd.Method.Parameters;
 		}
 	}
+	[AttributeUsage( AttributeTargets.Method )]
 	public class CommandAttribute : Attribute
 	{
 		public string Name { get; set; }
