@@ -50,7 +50,7 @@ namespace Breaker
 		{
 			if(groups.ContainsKey(group.Id))
 			{
-				Util.LogError( $"Tried to register group with duplicate id {group.Id}!" );
+				Logging.LogError( $"Tried to register group with duplicate id {group.Id}!" );
 				return;
 			}
 
@@ -63,7 +63,7 @@ namespace Breaker
 		{
 			if ( !groups.ContainsKey( id ) )
 			{
-				Util.LogError( $"Tried to remove group with id {id} which doesnt exist!" );
+				Logging.LogError( $"Tried to remove group with id {id} which doesnt exist!" );
 				return;
 			}
 

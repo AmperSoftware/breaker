@@ -47,7 +47,7 @@ namespace Breaker
 						Remove( cl );
 					return;
 				default:
-					Util.LogError( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
+					Logging.LogError( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
 					return;
 			}
 		}
@@ -63,7 +63,7 @@ namespace Breaker
 					Remove( user );
 					return;
 				default:
-					Util.LogError( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
+					Logging.LogError( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
 					return;
 			}
 		}
@@ -96,6 +96,9 @@ namespace Breaker
 		private const string WHITELIST_PERMISSION = "breaker.whitelist";
 		public static bool IsWhitelisted( long id )
 		{
+			if ( !User.Exists( id ) )
+				return false;
+
 			User user = User.All[id];
 			if ( user != null && Permission.Has( user, WHITELIST_PERMISSION ) )
 				return true;
@@ -116,6 +119,7 @@ namespace Breaker
 			{
 				if ( !IsWhitelisted( client ) )
 				{
+					Debug.Log( $"User {client.Name} is not whitelisted, Kicking..." );
 					client.Kick();
 				}
 			}

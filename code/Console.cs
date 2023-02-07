@@ -30,13 +30,13 @@ namespace Breaker
 			[Command("reload"), Permission("breaker.reload")]
 			public static void Reload()
 			{
-				Util.LogInfo( "Reloading..." );
+				Logging.LogInfo( "Reloading..." );
 				Config.Load();
 				
-				Util.LogInfo("Finished Reloading!");
-				Util.LogInfo( $"{Command.All.Count} commands loaded" );
-				Util.LogInfo( $"{User.All.Count} users loaded" );
-				Util.LogInfo( $"{UserGroup.All.Count} user groups loaded" );
+				Logging.LogInfo("Finished Reloading!");
+				Logging.LogInfo( $"{Command.All.Count} commands loaded" );
+				Logging.LogInfo( $"{User.All.Count} users loaded" );
+				Logging.LogInfo( $"{UserGroup.All.Count} user groups loaded" );
 			}
 
 			const int COMMANDS_PER_PAGE = 10;
@@ -52,8 +52,8 @@ namespace Breaker
 				if(pageCount < 1)
 					pageCount = 1;
 
-				Util.LogInfo( $"{length} commands currently registered." );
-				Util.LogInfo( $"Page {page} of {pageCount}" );
+				Logging.LogInfo( $"{length} commands currently registered." );
+				Logging.LogInfo( $"Page {page} of {pageCount}" );
 				for ( int i = COMMANDS_PER_PAGE * (page-1); i < length; i++ )
 				{
 					PrintCommand( cmds[i] );
@@ -72,7 +72,7 @@ namespace Breaker
 				if ( !string.IsNullOrEmpty( desc ) )
 					name += $"| {desc}";
 				
-				Util.LogInfo( $"- {name}" );
+				Logging.LogInfo( $"- {name}" );
 			}
 			private static string PrettyParamName(ParameterInfo p)
 			{

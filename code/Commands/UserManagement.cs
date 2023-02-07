@@ -15,7 +15,7 @@ namespace Breaker.Commands
 			foreach(var cl in Game.Clients)
 			{
 				var user = User.Get( cl );
-				Util.LogInfo( $"{cl.Name} | Groups: ({string.Join(",", user.UserGroups)})" );
+				Logging.LogInfo( $"{cl.Name} | Groups: ({string.Join(",", user.UserGroups)})" );
 			}
 		}
 
@@ -25,13 +25,18 @@ namespace Breaker.Commands
 			var user = User.Get( target );
 			if(UserGroup.Exists(group))
 			{
+				if ( user.UserGroups.Contains( group ) )
+				{
+					Logging.LogError( $"Client is already in group {group}!" );
+					return;
+				}
 				user.UserGroups.Add( group );
 				User.Update( user );
-				Util.LogInfo( $"Added client {target} to group {group}" );
+				Logging.LogInfo( $"Added client {target} to group {group}" );
 			}
 			else
 			{
-				Util.LogError( $"Group {group} does not exist!" );
+				Logging.LogError( $"Group {group} does not exist!" );
 			}
 		}
 
@@ -43,11 +48,11 @@ namespace Breaker.Commands
 			{
 				user.UserGroups.Remove( group );
 				User.Update( user );
-				Util.LogInfo( $"Removed client {target} from group {group}" );
+				Logging.LogInfo( $"Removed client {target} from group {group}" );
 			}
 			else
 			{
-				Util.LogError( $"Client is not in group {group}!" );
+				Logging.LogError( $"Client is not in group {group}!" );
 			}
 		}
 	}

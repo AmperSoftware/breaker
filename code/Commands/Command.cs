@@ -144,7 +144,7 @@ namespace Breaker
 							var parserCount = parsers?.Count();
 							if ( parsers == null || parserCount == 0 )
 							{
-								Util.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be parsed!" );
+								Logging.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be parsed!" );
 								return;
 							}
 							Debug.Log( $"Found {parserCount} parsers for type {type}!" );
@@ -162,7 +162,7 @@ namespace Breaker
 
 							if ( !parsed )
 							{
-								Util.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be converted to {type}!" );
+								Logging.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be converted to {type}!" );
 								return;
 							}
 						}

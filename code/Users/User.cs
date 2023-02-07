@@ -38,7 +38,7 @@ namespace Breaker
 		{
 			if ( users.ContainsKey( user.SteamID ) )
 			{
-				Util.LogError( $"Tried to register user with duplicate id {user.SteamID}! " );
+				Logging.LogError( $"Tried to register user with duplicate id {user.SteamID}! " );
 				return;
 			}
 			users.Add( user.SteamID, user );
@@ -57,14 +57,17 @@ namespace Breaker
 		}
 		public static void Update( User user )
 		{
-			if ( !users.ContainsKey( user.SteamID ))
+			if ( !Exists( user ))
 			{
-				Util.LogError( $"Tried to update user with id {user.SteamID} which doesnt exist!" );
+				Logging.LogError( $"Tried to update user with id {user.SteamID} which doesnt exist!" );
 				return;
 			}
 			users[user.SteamID] = user;
 			Save();
 		}
+		public static bool Exists( long id ) => users.ContainsKey(id );
+		public static bool Exists( User user ) => Exists( user.SteamID );
+		public static bool Exists( IClient client ) => Exists( client.SteamId );
 		#endregion
 		public long SteamID { get; set; }
 		/// <summary>
@@ -112,7 +115,7 @@ namespace Breaker
 			// Check for new clients
 			foreach ( var cl in Game.Clients )
 			{
-				if ( !users.ContainsKey( cl.SteamId ) )
+				if ( !Exists( cl ) )
 				{
 					Add( cl );
 				}
