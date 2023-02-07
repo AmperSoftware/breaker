@@ -48,7 +48,7 @@ namespace Breaker
 
 				var cmds = Command.All.OrderBy(kv => kv.Key).ToArray();
 				int length = cmds.Length;
-				int pageCount = length / COMMANDS_PER_PAGE;
+				int pageCount = MathX.CeilToInt(length / (float)COMMANDS_PER_PAGE);
 				if(pageCount < 1)
 					pageCount = 1;
 
@@ -108,7 +108,7 @@ namespace Breaker
 		public static class Vars
 		{
 			[ConVar.Replicated] public static int breaker_reserved_slots { get; set; } = 0;
-			[ConVar.Replicated] public static bool breaker_whitelist_enabled { get; set; } = true;
+			[ConVar.Replicated] public static bool breaker_whitelist_enabled { get; set; } = false;
 			[ConVar.Replicated] public static bool breaker_debug { get; set; } = false;
 		}
 	}

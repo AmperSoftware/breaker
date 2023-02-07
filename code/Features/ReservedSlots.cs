@@ -20,8 +20,13 @@ namespace Breaker
 		[BRKEvent.PlayerJoined]
 		private static void PlayerJoined(IClient cl)
 		{
+			if ( !Enabled() )
+				return;
+
+			Debug.Log( $"{cl} joined with {currentPlayers} players and {publicSlots}/{Game.Server.MaxPlayers} slots");
 			if ( currentPlayers > publicSlots && !cl.HasPermission( RESERVED_SLOT_PERMISSION ) )
 			{
+				Debug.Log( $"No public slots left for {cl}! Kicking..." );
 				cl.Kick();
 			}
 		}
