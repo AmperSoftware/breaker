@@ -20,18 +20,34 @@ namespace Breaker.Commands
 		}
 
 		[Command("usergroup"),Permission("breaker.user.group")]
-		public static void SetGroup(IClient target, string group)
+		public static void AddGroup(IClient target, string group)
 		{
 			var user = User.Get( target );
 			if(UserGroup.Exists(group))
 			{
 				user.UserGroups.Add( group );
 				User.Update( user );
-				Debug.Log( $"Added client {target} to group {group}" );
+				Util.LogInfo( $"Added client {target} to group {group}" );
 			}
 			else
 			{
-				Debug.Log( $"Group {group} does not exist!" );
+				Util.LogError( $"Group {group} does not exist!" );
+			}
+		}
+
+		[Command( "usergroupremove" ), Permission( "breaker.user.group" )]
+		public static void RemoveGroup(IClient target, string group)
+		{
+			var user = User.Get( target );
+			if(user.UserGroups.Contains(group))
+			{
+				user.UserGroups.Remove( group );
+				User.Update( user );
+				Util.LogInfo( $"Removed client {target} from group {group}" );
+			}
+			else
+			{
+				Util.LogError( $"Client is not in group {group}!" );
 			}
 		}
 	}

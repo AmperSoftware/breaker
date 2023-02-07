@@ -19,7 +19,7 @@ namespace Breaker
 		public static IReadOnlyDictionary<long, User> All => users.AsReadOnly();
 		public static User Get( IClient client ) => users[client.SteamId];
 		
-		[BKREvent.ConfigLoaded]
+		[BRKEvent.ConfigLoaded]
 		public static void Load()
 		{
 			Debug.Log( $"Reading users from {fs.GetFullPath( USER_FILE )}..." );
@@ -105,25 +105,18 @@ namespace Breaker
 			return false;
 		}
 
-		static int lastPlayerCount = 0;
-		[Event.Tick.Server]
+		
+		[BRKEvent.PlayerNumberChanged]
 		static void Tick()
 		{
-			var clients = Game.Clients;
-			if ( clients == null || clients.Count() == lastPlayerCount )
-				return;
-			
 			// Check for new clients
-			// TODO: This is stupid, get a way to only check for this if a client joined
-			foreach ( var cl in clients )
+			foreach ( var cl in Game.Clients )
 			{
 				if ( !users.ContainsKey( cl.SteamId ) )
 				{
 					Add( cl );
 				}
 			}
-
-			lastPlayerCount = clients.Count();
 		}
 	}
 }

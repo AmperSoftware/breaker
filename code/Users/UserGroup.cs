@@ -20,7 +20,7 @@ namespace Breaker
 			{ "admin", new() {Id = "admin", Weight = 100} }
 		};
 		
-		[BKREvent.ConfigLoaded]
+		[BRKEvent.ConfigLoaded]
 		public static void Load()
 		{
 			Debug.Log( $"Reading groups from {fs.GetFullPath( GROUP_FILE )}..." );

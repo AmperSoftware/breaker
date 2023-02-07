@@ -1,9 +1,9 @@
 {
-  "Title": "Breaker - Admin System",
+  "Title": "Breaker Admin System",
   "Type": "addon",
   "Org": "based",
   "Ident": "breaker",
-  "Tags": "",
+  "Tags": "admin, user",
   "Schema": 1,
   "HasAssets": false,
   "AssetsPath": "",
@@ -24,6 +24,7 @@
       "RootNamespace": "Breaker",
       "DefineConstants": "SANDBOX;ADDON;DEBUG",
       "NoWarn": "1701;1702;1591;"
-    }
+    },
+    "CsProjName": ""
   }
 }

@@ -8,17 +8,18 @@ namespace Breaker
 {
 	public static class Permission
 	{
-		public static IEnumerable<string> GetPermissions( IClient client )
-		{
-			return User.Get( client ).GetPermissions();
-		}
 		public static bool Has(IClient cl, string permission)
 		{
-			var permissions = GetPermissions( cl );
-			if ( permissions.Contains( permission ) )
+			if ( cl.IsListenServerHost )
 				return true;
 
-			return cl.IsListenServerHost;
+			return Has( User.Get( cl ), permission );
+		}
+		public static bool Has(User user, string permission)
+		{
+			var permissions = user.GetPermissions();
+
+			return permissions.Contains( permission );
 		}
 	}
 	[AttributeUsage(AttributeTargets.Method)]

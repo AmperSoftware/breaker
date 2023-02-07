@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace Breaker
 		/// </summary>
 		public static class Commands
 		{
-			[ConCmd.Server( "bkr" )]
+			[ConCmd.Server( "brk" )]
 			public static void RunCommand(string command, string p1 = "", string p2 = "", string p3 = "", string p4 = "" )
 			{
 				var parameters = new string[] { p1, p2, p3, p4 };
@@ -44,7 +46,7 @@ namespace Breaker
 				if ( page < 1 )
 					page = 1;
 
-				var cmds = Command.All.ToArray();
+				var cmds = Command.All.OrderBy(kv => kv.Key).ToArray();
 				int length = cmds.Length;
 				int pageCount = length / COMMANDS_PER_PAGE;
 				if(pageCount < 1)
@@ -54,15 +56,49 @@ namespace Breaker
 				Util.LogInfo( $"Page {page} of {pageCount}" );
 				for ( int i = COMMANDS_PER_PAGE * (page-1); i < length; i++ )
 				{
-					var cmd = cmds[i];
-					string name = cmd.Key;
-					var p = Command.Parameters( name );
-					if ( p.Length > 0 )
-					{
-						name += $" ({string.Join( " ,", p.Select( x => $"{x.Name}: {x.ParameterType.Name}" ) )})";
-					}
-					Util.LogInfo( $"- {name}" );
+					PrintCommand( cmds[i] );
 				}
+			}
+
+			private static void PrintCommand( KeyValuePair<string, Command.CommandInfo> cmd )
+			{
+				string name = cmd.Key;
+				var p = Command.Parameters( name );
+				if ( p.Length > 0 )
+				{
+					name += $" ({string.Join( ", ", p.Select( x => $"{PrettyParamName(x)}: {PrettyTypeName(x.ParameterType)}" ) )})";
+				}
+				string desc = cmd.Value.Method.Description;
+				if ( !string.IsNullOrEmpty( desc ) )
+					name += $"| {desc}";
+				
+				Util.LogInfo( $"- {name}" );
+			}
+			private static string PrettyParamName(ParameterInfo p)
+			{
+				var title = p.GetCustomAttribute<TitleAttribute>();
+				if ( title != null )
+					return title.Value;
+
+				return p.Name;
+			}
+			private static string PrettyTypeName(Type t)
+			{
+				if ( t == typeof( string ) )
+					return "String";
+				if ( t == typeof( int ) )
+					return "Integer";
+				if ( t == typeof( float ) )
+					return "Float";
+				if ( t == typeof( bool ) )
+					return "Boolean";
+				if ( t == typeof( Vector3 ) )
+					return "Vector";
+				if ( t == typeof( IClient ) )
+					return "Client";
+				if ( t == typeof( IEnumerable<IClient> ) )
+					return "Clients";
+				return t.Name;
 			}
 		}
 
@@ -71,6 +107,8 @@ namespace Breaker
 		/// </summary>
 		public static class Vars
 		{
+			[ConVar.Replicated] public static int breaker_reserved_slots { get; set; } = 0;
+			[ConVar.Replicated] public static bool breaker_whitelist_enabled { get; set; } = true;
 			[ConVar.Replicated] public static bool breaker_debug { get; set; } = false;
 		}
 	}
