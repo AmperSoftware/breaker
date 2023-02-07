@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Breaker
@@ -137,42 +138,25 @@ namespace Breaker
 							// We cant cast with the builtin parsers, try custom ones
 
 							bool parsed = false;
+							
+							
 							var parsers = GetParsers( type );
 							var parserCount = parsers?.Count();
-							if(parsers == null || parserCount == 0)
+							if ( parsers == null || parserCount == 0 )
 							{
 								Util.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be parsed!" );
 								return;
 							}
 							Debug.Log( $"Found {parserCount} parsers for type {type}!" );
-							
-							// If this type is a list of stuff
-							if ( typeof( IEnumerable ).IsAssignableFrom( type ) )
+							foreach ( var parser in parsers )
 							{
-								foreach ( var parser in parsers )
+								Debug.Log( $"Trying out parser {parser}" );
+								value = parser.Parse( caller, arg );
+								if ( value != default && type.IsAssignableFrom( value.GetType() ) )
 								{
-									Debug.Log( $"Trying out parser {parser}" );
-									value = parser.ParseMultiple( caller, arg );
-									if ( value != default && type.IsAssignableFrom( value.GetType() ) )
-									{
-										Debug.Log( $"Successfully parsed {arg} to {value}!" );
-										parsed = true;
-										break;
-									}
-								}
-							}
-							else
-							{
-								foreach ( var parser in parsers )
-								{
-									Debug.Log( $"Trying out parser {parser}" );
-									value = parser.Parse( caller, arg );
-									if ( value != default && type.IsAssignableFrom( value.GetType() ) )
-									{
-										Debug.Log( $"Successfully parsed {arg} to {value}!" );
-										parsed = true;
-										break;
-									}
+									Debug.Log( $"Successfully parsed {arg} to {value}!" );
+									parsed = true;
+									break;
 								}
 							}
 

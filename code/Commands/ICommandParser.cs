@@ -15,18 +15,6 @@ namespace Breaker
 	public interface ICommandParser<T> : ICommandParser
 	{
 		public new T Parse( IClient caller, string input );
-		public new IEnumerable<T> ParseMultiple( IClient caller, string input )
-		{
-			var elements = new List<T>();
-			foreach ( var part in input.Split( ',' ) )
-			{
-				var parsed = Parse( caller, part );
-				if ( parsed != null )
-					elements.Add( parsed );
-			}
-
-			return elements;
-		}
 	}
 	
 	/// <summary>
@@ -35,17 +23,5 @@ namespace Breaker
 	public interface ICommandParser
 	{
 		public object Parse( IClient caller, string input );
-		public virtual IEnumerable ParseMultiple( IClient caller, string input )
-		{
-			var elements = new List<object>();
-			foreach ( var part in input.Split( ',' ) )
-			{
-				var parsed = Parse( caller, part );
-				if ( parsed != null )
-					elements.Add( parsed );
-			}
-
-			return elements;
-		}
 	}
 }

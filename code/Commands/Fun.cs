@@ -12,11 +12,17 @@ namespace Breaker.Commands
 		[Command( "slay" ), Permission( "breaker.slay" )]
 		public static void Slay(IEnumerable<IClient> targets)
 		{
-			foreach(var target in targets)
+			Debug.Log( $"Slaying {targets.Count()} targets" );
+			foreach (var target in targets)
 			{
+				Debug.Log( $"Slaying target {target}" );
+
 				var pawn = target.Pawn;
 				if ( pawn is Entity ent )
+				{
 					ent.Health = 0;
+					ent.OnKilled();
+				}
 			}
 		}
 	}

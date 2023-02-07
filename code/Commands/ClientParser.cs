@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Breaker
 {
-	//[Library]
 	public class ClientParser : ICommandParser<IClient>
 	{
 		public IClient Parse( IClient caller, string input )
@@ -17,7 +16,6 @@ namespace Breaker
 			{
 				
 				input = string.Join("",input.Skip( 1 ));
-				Log.Info( input );
 				if ( singleSelectors.TryGetValue( input, out var selector ) )
 				{
 					Debug.Log( $"Using selector {input}" );
@@ -36,23 +34,25 @@ namespace Breaker
 		}
 		object ICommandParser.Parse( IClient caller, string input ) => Parse( caller, input );
 
-		public IEnumerable<IClient> ParseMultiple(IClient caller, string input)
+		public class MultiParser : ICommandParser<IEnumerable<IClient>>
 		{
-			Debug.Log( $"Multi-Parsing input {input} with caller {caller}" );
-			if (input.StartsWith('@'))
+			public IEnumerable<IClient> Parse( IClient caller, string input )
 			{
-				input = input.Skip( 1 ).ToString();
-				if(multiSelectors.TryGetValue(input, out var selector))
+				Debug.Log( $"Multi-Parsing input {input} with caller {caller}" );
+				if ( input.StartsWith( '@' ) )
 				{
-					return selector( caller, input );
+					input = string.Join( "", input.Skip( 1 ) );
+					if ( multiSelectors.TryGetValue( input, out var selector ) )
+					{
+						Debug.Log( $"Using selector {input}" );
+						return selector( caller, input );
+					}
 				}
-			}
-			else if(!input.Contains(';'))
-			{
+				
 				return Game.Clients.Where( c => c.Name.Contains( input ) );
 			}
 
-			return ((ICommandParser<IClient>)this).ParseMultiple( caller, input );
+			object ICommandParser.Parse( IClient caller, string input ) => Parse( caller, input );
 		}
 
 		#region Selectors
