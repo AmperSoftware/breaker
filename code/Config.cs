@@ -11,32 +11,34 @@ namespace Breaker
 	{
 		#region Persistent Config
 		const string CONFIG_FILE = "breaker.config";
-		private static readonly BaseFileSystem fs = FileSystem.Mounted;
+		private static readonly BaseFileSystem configfs = FileSystem.OrganizationData;
+		private static BaseFileSystem fs;
 		public static Config Instance { get; private set; } = new();
 
-		static Config()
-		{
-			Load();
-		}
-
+		[Event.Entity.PostSpawn]
+		[Event.Hotload]
 		public static void Load()
 		{
-			if ( !fs.FileExists( CONFIG_FILE ) )
+			if ( !configfs.FileExists( CONFIG_FILE ) )
 			{
 				Debug.Log( "Config file not found, creating new one." );
 				Save();
-				return;
 			}
 
-			var config = fs.ReadJson<Config>( CONFIG_FILE );
+			var config = configfs.ReadJson<Config>( CONFIG_FILE );
 			if ( config == null )
 			{
 				Debug.Log( "Config file is invalid, creating new one." );
 				Save();
-				return;
 			}
 
 			Instance = config;
+			
+			if ( !configfs.DirectoryExists( "breaker" ) )
+				configfs.CreateDirectory( "breaker" );
+			fs = configfs.CreateSubSystem( "breaker" );
+
+			Event.Run( "breaker.config.loaded" );
 		}
 
 		public static void Save()
@@ -46,32 +48,24 @@ namespace Breaker
 				Instance = new();
 			}
 
-			fs.WriteJson( CONFIG_FILE, Instance );
+			Debug.Log( $"Saving config to {configfs.GetFullPath(CONFIG_FILE)}" );
+			configfs.WriteJson( CONFIG_FILE, Instance );
 		}
 
 		#endregion Persistent Config
 
 		public enum DataLocation
 		{
-			GlobalFile,
 			PerOrgFile,
 			PerGamemodeFile
 		}
 
-		public DataLocation Location { get; set; } = DataLocation.GlobalFile;
+		public DataLocation Location { get; set; } = DataLocation.PerOrgFile;
 		public bool EnableMenu { get; set; } = true;
 		public string DefaultUserGroup { get; set; } = "user";
 		public BaseFileSystem GetFileSystem()
 		{
-			switch ( Location )
-			{
-				case DataLocation.PerOrgFile:
-					return FileSystem.OrganizationData;
-				case DataLocation.PerGamemodeFile:
-					return FileSystem.Data;
-				default:
-					return FileSystem.Mounted;
-			}
+			return fs;
 		}
 	}
 }

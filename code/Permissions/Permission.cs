@@ -8,10 +8,9 @@ namespace Breaker
 {
 	public static class Permission
 	{
-		private static Dictionary<IClient, List<string>> clientPermissions = new();
 		public static IEnumerable<string> GetPermissions( IClient client )
 		{
-			return new string[] { "breaker.menu" };
+			return User.Get( client ).GetPermissions();
 		}
 		public static bool Has(IClient cl, string permission)
 		{
@@ -19,7 +18,7 @@ namespace Breaker
 			if ( permissions.Contains( permission ) )
 				return true;
 
-			return false;
+			return cl.IsListenServerHost;
 		}
 	}
 	[AttributeUsage(AttributeTargets.Method)]

@@ -10,10 +10,9 @@ namespace Breaker
 {
 	public static class Debug
 	{
-		[ConVar.Replicated] public static bool breaker_debug { get; set; } = false;
 		public static bool Enabled()
 		{
-			return breaker_debug;
+			return Console.Vars.breaker_debug;
 		}
 
 		public static void Log(string message)
@@ -21,7 +20,7 @@ namespace Breaker
 			if ( !Enabled() )
 				return;
 
-			GlobalGameNamespace.Log.Info($"[Breaker] {message}");
+			Util.LogInfo($"[Debug] {message}");
 		}
 		public static void Log( object message )
 		{

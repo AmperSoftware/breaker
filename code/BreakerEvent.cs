@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Breaker
 {
-	public static class Program
+	public static class BKREvent
 	{
-		public static void OnLoad()
+		public class ConfigLoadedAttribute : EventAttribute
 		{
-			//Game.Clients
+			public ConfigLoadedAttribute() : base( "breaker.config.loaded" ) { }
 		}
 	}
 }

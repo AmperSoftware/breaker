@@ -9,9 +9,12 @@ namespace Breaker
 {
 	public static class Console
 	{
+		/// <summary>
+		/// All the basic breaker commands.
+		/// </summary>
 		public static class Commands
 		{
-			[ConCmd.Server( "breaker" )]
+			[ConCmd.Server( "bkr" )]
 			public static void RunCommand(string command, string p1 = "", string p2 = "", string p3 = "", string p4 = "" )
 			{
 				var parameters = new string[] { p1, p2, p3, p4 };
@@ -26,10 +29,12 @@ namespace Breaker
 			public static void Reload()
 			{
 				Util.LogInfo( "Reloading..." );
-				Command.LoadAll();
+				Config.Load();
 				
 				Util.LogInfo("Finished Reloading!");
 				Util.LogInfo( $"{Command.All.Count} commands loaded" );
+				Util.LogInfo( $"{User.All.Count} users loaded" );
+				Util.LogInfo( $"{UserGroup.All.Count} user groups loaded" );
 			}
 
 			const int COMMANDS_PER_PAGE = 10;
@@ -56,9 +61,17 @@ namespace Breaker
 					{
 						name += $" ({string.Join( " ,", p.Select( x => $"{x.Name}: {x.ParameterType.Name}" ) )})";
 					}
-					Log.Info( $"- {name}" );
+					Util.LogInfo( $"- {name}" );
 				}
 			}
+		}
+
+		/// <summary>
+		/// All the basic breaker console variables.
+		/// </summary>
+		public static class Vars
+		{
+			[ConVar.Replicated] public static bool breaker_debug { get; set; } = false;
 		}
 	}
 }

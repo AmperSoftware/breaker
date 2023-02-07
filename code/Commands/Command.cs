@@ -1,8 +1,12 @@
 ﻿using Sandbox;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,10 +65,10 @@ namespace Breaker
 		/// <summary>
 		/// Executes a command.
 		/// </summary>
-		/// <param name="client">The client that executed the command.</param>
+		/// <param name="caller">The client that executed the command.</param>
 		/// <param name="command">The command to execute.</param>
 		/// <param name="args">The arguments to pass to the command.</param>
-		public static void Execute( string command, IClient client, string[] args)
+		public static void Execute( string command, IClient caller, string[] args)
 		{
 			if ( !commands.TryGetValue( command, out var info ) )
 			{
@@ -78,7 +82,7 @@ namespace Breaker
 			{
 				foreach(var perm in permissions)
 				{
-					if ( !client.HasPermission( perm ) )
+					if ( !caller.HasPermission( perm ) )
 					{
 						Log.Error( $"Tried to execute command {command} but the client doesn't have the permission {perm.Permission}!" );
 						return;
@@ -90,7 +94,7 @@ namespace Breaker
 			
 			int parameterCount = parameters.Length;
 			int requiredParameters = parameterCount - parameters.Count( p => p.DefaultValue != null );
-			if(requiredParameters > 0 || parameterCount > 0 && args.Length > 0)
+			if(parameterCount > 0)
 			{
 				if(args == default)
 				{
@@ -99,7 +103,7 @@ namespace Breaker
 				}
 
 				int argsCount = args.Length;
-				if ( parameterCount != argsCount )
+				if ( parameterCount < argsCount || argsCount < requiredParameters )
 				{
 					Log.Error( $"Tried to execute command {command} but the parameter count doesn't match the argument count!" );
 					return;
@@ -110,28 +114,85 @@ namespace Breaker
 				for ( int i = 0; i < parameterCount; i++ )
 				{
 					var type = parameterTypes.ElementAt( i );
-					var argument = args[i];
 
-					object value = null;
-					if ( !type.IsAssignableFrom( argument.GetType() ) )
+					Debug.Log( $"Element {i} in {argsCount}" );
+					if ( i >= argsCount )
 					{
-						value = Convert.ChangeType( argument, type );
-						if ( !type.IsAssignableFrom( value.GetType() ) )
+						Debug.Log( $"Using default value" );
+						parameterValues[i] = parameters.ElementAt( i ).DefaultValue;
+						continue;
+					}
+					
+					string arg = args[i];
+					object value = null;
+					if ( !type.IsAssignableFrom( arg.GetType() ) )
+					{
+						try
 						{
-							Log.Error( $"Tried to execute command {command} but the argument {argument} couldn't be converted to {type}!" );
-							return;
+							value = Convert.ChangeType( arg, type );
+							Debug.Log( $"Converted {arg} to type {type}" );
+						}
+						catch(InvalidCastException)
+						{
+							// We cant cast with the builtin parsers, try custom ones
+
+							bool parsed = false;
+							var parsers = GetParsers( type );
+							var parserCount = parsers?.Count();
+							if(parsers == null || parserCount == 0)
+							{
+								Util.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be parsed!" );
+								return;
+							}
+							Debug.Log( $"Found {parserCount} parsers for type {type}!" );
+							
+							// If this type is a list of stuff
+							if ( typeof( IEnumerable ).IsAssignableFrom( type ) )
+							{
+								foreach ( var parser in parsers )
+								{
+									Debug.Log( $"Trying out parser {parser}" );
+									value = parser.ParseMultiple( caller, arg );
+									if ( value != default && type.IsAssignableFrom( value.GetType() ) )
+									{
+										Debug.Log( $"Successfully parsed {arg} to {value}!" );
+										parsed = true;
+										break;
+									}
+								}
+							}
+							else
+							{
+								foreach ( var parser in parsers )
+								{
+									Debug.Log( $"Trying out parser {parser}" );
+									value = parser.Parse( caller, arg );
+									if ( value != default && type.IsAssignableFrom( value.GetType() ) )
+									{
+										Debug.Log( $"Successfully parsed {arg} to {value}!" );
+										parsed = true;
+										break;
+									}
+								}
+							}
+
+							if ( !parsed )
+							{
+								Util.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be converted to {type}!" );
+								return;
+							}
 						}
 					}
 					else
 					{
-						value = argument;
+						value = arg;
 					}
 
 					parameterValues[i] = value;
 				}
 
 				Debug.Log( $"Executing {command} with parameters" );
-				foreach(var p in parameters)
+				foreach(var p in parameterValues)
 				{
 					Debug.Log( $"- {p}" );
 				}
@@ -142,6 +203,23 @@ namespace Breaker
 			{
 				method.Invoke( null, null );
 			}
+		}
+		public static IEnumerable<ICommandParser<T>> GetParsers<T>()
+		{
+			return TypeLibrary.GetTypes<ICommandParser<T>>()
+								.Select(t => t.Create<ICommandParser<T>>());
+		}
+		
+		public static IEnumerable<ICommandParser> GetParsers(Type t)
+		{
+			return TypeLibrary.GetTypes()
+									   .Where( td =>
+										   td.Interfaces.Any(
+											   i => i.IsAssignableTo(typeof( ICommandParser ) )
+												   && i.FullName.Contains( t.Name )
+										   )
+									   )
+									   .Select(td => td.Create<ICommandParser>());
 		}
 		public static ParameterInfo[] Parameters( string name )
 		{

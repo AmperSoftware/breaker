@@ -13,20 +13,25 @@ namespace Breaker
 	public class User
 	{
 		#region Persistent Users
-		const string USER_FILE = "breaker/users.json";
+		const string USER_FILE = "users.json";
 		private static BaseFileSystem fs => Config.Instance.GetFileSystem();
 		private static Dictionary<long, User> users = new();
 		public static IReadOnlyDictionary<long, User> All => users.AsReadOnly();
 		public static User Get( IClient client ) => users[client.SteamId];
+		
+		[BKREvent.ConfigLoaded]
 		public static void Load()
 		{
+			Debug.Log( $"Reading users from {fs.GetFullPath( USER_FILE )}..." );
 			users = fs.ReadJsonOrDefault( USER_FILE, new Dictionary<long, User>() );
+			Debug.Log( $"Loaded data of {users.Count} users." );
 		}
 		public static void Save()
 		{
-			if ( users.Count == 0 )
+			if ( users?.Count == 0 )
 				users = new();
 			
+			Debug.Log( $"Saved {users.Count} users to {fs.GetFullPath( USER_FILE )}" );
 			fs.WriteJson( USER_FILE, users );
 		}
 		public static void Add( User user )
@@ -37,13 +42,15 @@ namespace Breaker
 				return;
 			}
 			users.Add( user.SteamID, user );
+			Debug.Log( $"Adding user {user.SteamID}..." );
 			Save();
 		}
 		public static void Add(IClient client)
 		{
 			User user = new() { 
 				SteamID = client.SteamId, 
-				UserGroups = new() { UserGroup.GetDefault().Id } 
+				//UserGroups = new() { UserGroup.GetDefault().Id } 
+				UserGroups = new() { Config.Instance?.DefaultUserGroup}
 			};
 			
 			Add( user );
@@ -96,6 +103,27 @@ namespace Breaker
 				}
 			}
 			return false;
+		}
+
+		static int lastPlayerCount = 0;
+		[Event.Tick.Server]
+		static void Tick()
+		{
+			var clients = Game.Clients;
+			if ( clients == null || clients.Count() == lastPlayerCount )
+				return;
+			
+			// Check for new clients
+			// TODO: This is stupid, get a way to only check for this if a client joined
+			foreach ( var cl in clients )
+			{
+				if ( !users.ContainsKey( cl.SteamId ) )
+				{
+					Add( cl );
+				}
+			}
+
+			lastPlayerCount = clients.Count();
 		}
 	}
 }

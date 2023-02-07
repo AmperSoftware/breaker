@@ -10,7 +10,7 @@ namespace Breaker
     public class UserGroup
     {
 		#region Persistent User Groups
-		const string GROUP_FILE = "breaker/groups.json";
+		const string GROUP_FILE = "groups.json";
 		private static BaseFileSystem fs => Config.Instance.GetFileSystem();
 		private static Dictionary<string, UserGroup> groups = new();
 		public static IReadOnlyDictionary<string,UserGroup> All => groups.AsReadOnly();
@@ -19,17 +19,31 @@ namespace Breaker
 			{ "user", new() {Id = "user", Weight = 0 } },
 			{ "admin", new() {Id = "admin", Weight = 100} }
 		};
+		
+		[BKREvent.ConfigLoaded]
 		public static void Load()
 		{
-			groups = fs.ReadJsonOrDefault( GROUP_FILE, defaultGroups );
+			Debug.Log( $"Reading groups from {fs.GetFullPath( GROUP_FILE )}..." );
+			groups = fs.ReadJsonOrDefault<Dictionary<string,UserGroup>>( GROUP_FILE );
+			if(groups == null)
+			{
+				groups = defaultGroups;
+				Save();
+			}
+			
+			Debug.Log( $"Loaded data of {groups.Count} groups." );
 		}
 
 		public static void Save()
 		{
 			if ( groups.Count == 0 )
+			{
+				Debug.Log( $"No groups exist, creating default groups..." );
 				groups = defaultGroups;
+			}
 
 			fs.WriteJson( GROUP_FILE, groups );
+			Debug.Log( $"Saved {groups.Count} groups to {fs.GetFullPath( GROUP_FILE )}" );
 		}
 
 		public static void Add(UserGroup group)
@@ -59,6 +73,7 @@ namespace Breaker
 		}
 
 		public static void Remove( UserGroup group ) => Remove( group.Id );
+		public static bool Exists( string id ) => groups.ContainsKey( id );
 		#endregion
 		public static UserGroup GetDefault()
 		{
