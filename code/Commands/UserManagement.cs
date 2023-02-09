@@ -11,18 +11,18 @@ namespace Breaker.Commands
 	[Category("User Management")]
 	public static class UserManagement
 	{
-		[Command("getusers")]
+		[Command("getusers", "printusers")]
 		public static void PrintUsers()
 		{
-			Logging.TellClient( Command.Context.Caller, "Groups:" );
+			Logging.TellCaller( "Groups:" );
 			foreach (var cl in Game.Clients)
 			{
 				var user = User.Get( cl );
-				Logging.TellClient( Command.Context.Caller, $"{cl.Name} | Groups: ({string.Join(",", user.UserGroups)})" );
+				Logging.TellCaller($"{cl.Name} | Groups: ({string.Join(",", user.UserGroups)})" );
 			}
 		}
 
-		[Command("usergroup"),Permission("breaker.user.group")]
+		[Command("usergroup", "ugroup"),Permission("breaker.user.group")]
 		public static void ManageGroup([Title("add/remove")] string mode, IClient target, string group)
 		{
 			var user = User.Get( target );
@@ -30,14 +30,16 @@ namespace Breaker.Commands
 			{
 				case "add":
 					AddGroup( user, group );
-					Logging.Info( $"Added client {target} to group {group}" );
+					Logging.TellCaller( $"Added client {target} to group {group}" );
+					Logging.TellClient( target, $"You were added to group {group}!" );
 					break;
 				case "remove":
 					RemoveGroup( user, group );
-					Logging.Info( $"Removed client {target} from group {group}" );
+					Logging.TellCaller( $"Removed client {target} from group {group}" );
+					Logging.TellClient( target, $"You were removed from group {group}!" );
 					break;
 				default:
-					Logging.Error( $"Invalid mode {mode}!" );
+					Logging.TellCaller( $"Invalid mode {mode}!", MessageType.Error );
 					break;
 			}
 		}
@@ -48,7 +50,7 @@ namespace Breaker.Commands
 			{
 				if ( user.UserGroups.Contains( group ) )
 				{
-					Logging.Error( $"Client is already in group {group}!" );
+					Logging.TellCaller($"Client is already in group {group}!", MessageType.Error);
 					return;
 				}
 				user.UserGroups.Add( group );
@@ -56,7 +58,7 @@ namespace Breaker.Commands
 			}
 			else
 			{
-				Logging.Error( $"Group {group} does not exist!" );
+				Logging.TellCaller( $"Group {group} does not exist!", MessageType.Error );
 			}
 		}
 
@@ -69,7 +71,7 @@ namespace Breaker.Commands
 			}
 			else
 			{
-				Logging.Error( $"Client is not in group {group}!" );
+				Logging.TellCaller($"Client is not in group {group}!", MessageType.Error);
 			}
 		}
 	}

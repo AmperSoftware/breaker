@@ -131,7 +131,7 @@ namespace Breaker
 
 		public bool CanTarget( UserGroup target, string command = "" )
 		{
-			return target.Weight < Weight;
+			return this == target || target.Weight < Weight;
 		}
 	}
 }

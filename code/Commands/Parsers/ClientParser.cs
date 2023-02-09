@@ -47,6 +47,11 @@ namespace Breaker.Commands
 						Debug.Log( $"Using selector {input}" );
 						return selector( caller, input );
 					}
+
+					else if(singleSelectors.TryGetValue(input, out var singleSelector))
+					{
+						return new IClient[] { singleSelector( caller, input ) };
+					}
 				}
 
 				return Game.Clients.Where( c => c.Name.Contains( input ) );

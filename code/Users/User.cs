@@ -108,6 +108,16 @@ namespace Breaker
 			return false;
 		}
 
+		public bool CanTarget(UserGroup other, string command)
+		{
+			foreach ( var group in GetUserGroupInfo() )
+			{
+				if ( group.CanTarget( other, command ) )
+					return true;
+			}
+			return false;
+		}
+
 		
 		[BRKEvent.PlayerNumberChanged]
 		static void Tick()

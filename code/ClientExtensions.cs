@@ -18,5 +18,23 @@ namespace Breaker
 		{
 			Command.Execute( command, client, args );
 		}
+		public static bool CanTarget(this IClient client, User other, string command = "")
+		{
+			var user = User.Get( client );
+			if ( user == null )
+			{
+				return false;
+			}
+			return user.CanTarget( other, command );
+		}
+		public static bool CanTarget(this IClient client, UserGroup group, string command = "")
+		{
+			var user = User.Get( client );
+			if ( user == null )
+			{
+				return false;
+			}
+			return user.CanTarget( group, command );
+		}
 	}
 }

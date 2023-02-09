@@ -10,7 +10,7 @@ namespace Breaker.Commands
 	[Category( "User Groups" )]
 	public static class GroupManagement
 	{
-		[Command( "getgroups" )]
+		[Command( "getgroups", "printgroups" )]
 		public static void Print()
 		{
 			Logging.TellCaller(  "Groups:" );
@@ -20,7 +20,7 @@ namespace Breaker.Commands
 			}
 		}
 
-		[Command("groupadd"), Permission("breaker.group.create")]
+		[Command("groupadd", "addgroup"), Permission("breaker.group.create")]
 		public static void Add(string id, int weight, IEnumerable<string> permissions = default)
 		{
 			UserGroup group = new( id, weight, permissions?.ToList() );
@@ -35,7 +35,7 @@ namespace Breaker.Commands
 			Logging.TellCaller( $"Created group {id} with weight {weight} and {permissions.Count()} permissions." );
 		}
 
-		[Command("groupremove"), Permission("breaker.group.remove")]
+		[Command("groupremove", "removegroup"), Permission("breaker.group.remove")]
 		public static void Remove(string id)
 		{
 			if ( !UserGroup.Exists( id ) )
@@ -43,12 +43,18 @@ namespace Breaker.Commands
 				Logging.TellCaller( $"Group {id} does not exist!", MessageType.Error );
 				return;
 			}
+			var group = UserGroup.All[id];
+			if ( !Command.Caller.CanTarget( group ) )
+			{
+				Logging.TellCaller( $"You dont have permission to edit this group!", MessageType.Error );
+				return;
+			}
 
-			UserGroup.Remove( id );
+			UserGroup.Remove( group );
 			Logging.TellCaller( $"Removed group {id}." );
 		}
 
-		[Command("groupperms"), Permission("breaker.group.edit.permissions")]
+		[Command("groupperms", "grouppermissions", "gperms"), Permission("breaker.group.edit.permissions")]
 		public static void EditPermissions([Title("add/remove")]string action, string id, string permission)
 		{
 			if ( !UserGroup.Exists( id ) )
@@ -58,7 +64,13 @@ namespace Breaker.Commands
 			}
 
 			var group = UserGroup.All[id];
-			switch(action)
+			if ( !Command.Caller.CanTarget( group ) )
+			{
+				Logging.TellCaller( $"You dont have permission to edit this group!", MessageType.Error );
+				return;
+			}
+
+			switch (action)
 			{
 				case "add":
 					if ( group.Permissions.Contains( permission ) )
@@ -85,7 +97,7 @@ namespace Breaker.Commands
 					break;
 			}
 		}
-		[Command("groupweight"), Permission("breaker.group.edit.weight")]
+		[Command("groupweight", "groupwgt", "gweight"), Permission("breaker.group.edit.weight")]
 		public static void EditWeight(string id, int weight)
 		{
 			if ( !UserGroup.Exists( id ) )
@@ -95,12 +107,17 @@ namespace Breaker.Commands
 			}
 
 			var group = UserGroup.All[id];
+			if ( !Command.Caller.CanTarget( group ) )
+			{
+				Logging.TellCaller( $"You dont have permission to edit this group!", MessageType.Error );
+				return;
+			}
 			group.Weight = weight;
 			UserGroup.Update( group );
 			Logging.TellCaller( $"Set weight of group {id} to {weight}." );
 		}
 
-		[Command("groupsettings"), Permission("breaker.group.edit.settings")]
+		[Command("groupsettings", "groupsts", "gsettings"), Permission("breaker.group.edit.settings")]
 		public static void EditSettings(string id, string setting, string value)
 		{
 			if ( !UserGroup.Exists( id ) )
@@ -110,6 +127,12 @@ namespace Breaker.Commands
 			}
 
 			var group = UserGroup.All[id];
+			if(!Command.Caller.CanTarget(group))
+			{
+				Logging.TellCaller( $"You dont have permission to edit this group!", MessageType.Error );
+				return;
+			}
+
 			switch ( setting )
 			{
 				case "name":

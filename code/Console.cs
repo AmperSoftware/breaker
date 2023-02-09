@@ -43,7 +43,7 @@ namespace Breaker
 			}
 
 			const int COMMANDS_PER_PAGE = 10;
-			[Command( "help" )]
+			[Command( "help", "?" )]
 			public static void Help(int page = 1)
 			{
 				if ( page < 1 )
@@ -55,9 +55,19 @@ namespace Breaker
 				if(pageCount < 1)
 					pageCount = 1;
 
+				int pageStart = COMMANDS_PER_PAGE * (page - 1);
+				if ( pageStart >= length )
+				{
+					Logging.TellCaller( $"Page {page} does not exist." );
+					return;
+				}
+				int pageEnd = pageStart + COMMANDS_PER_PAGE;
+				if ( pageEnd > length )
+					pageEnd = length;
+
 				Logging.TellCaller( $"{length} commands currently registered." );
 				Logging.TellCaller( $"Page {page} of {pageCount}" );
-				for ( int i = COMMANDS_PER_PAGE * (page-1); i < length; i++ )
+				for ( int i = pageStart; i < pageEnd; i++ )
 				{
 					PrintCommand( cmds[i] );
 				}
@@ -95,6 +105,8 @@ namespace Breaker
 					return "Float";
 				if ( t == typeof( bool ) )
 					return "Boolean";
+				if ( t == typeof( long ) )
+					return "Long";
 				if ( t == typeof( Vector3 ) )
 					return "Vector";
 				if ( t == typeof( IClient ) )

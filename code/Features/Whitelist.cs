@@ -35,7 +35,7 @@ namespace Breaker
 		}
 		#endregion
 
-		[Command("whitelist"), Permission("breaker.whitelist.manage")]
+		[Command("whitelist", "wl"), Permission("breaker.whitelist.manage")]
 		private static void Manage([Title("add/remove")] string action, IEnumerable<IClient> clients)
 		{
 			switch ( action.ToLower() )
@@ -53,7 +53,7 @@ namespace Breaker
 					return;
 			}
 		}
-		[Command( "whitelistoffline" ), Permission( "breaker.whitelist.manage" )]
+		[Command( "whitelistoffline", "wloffline" ), Permission( "breaker.whitelist.manage" )]
 		private static void ManageOffline( [Title( "add/remove" )] string action, long user )
 		{
 			switch ( action.ToLower() )

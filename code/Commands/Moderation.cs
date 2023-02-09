@@ -25,6 +25,27 @@ namespace Breaker.Commands
 			{
 				return StartTime.AddSeconds( Duration );
 			}
+
+			public string GetDurationString()
+			{
+				if ( IsPermanent )
+					return "Permanent";
+
+				const int SECONDS_IN_DAY = 86400;
+				const int SECONDS_IN_HOUR = 3600;
+				const int SECONDS_IN_MINUTE = 60;
+
+				var time = TimeSpan.FromSeconds( Duration );
+
+				if (Duration > SECONDS_IN_DAY)
+					return $"{time.TotalDays}d";
+				else if(Duration > SECONDS_IN_HOUR )
+					return $"{time.TotalHours}h";
+				else if(Duration > SECONDS_IN_MINUTE )
+					return $"{time.TotalMinutes}m";
+				else
+					return $"{time.TotalSeconds}s";
+			}
 		}
 
 		public static void LoadBans()
@@ -42,8 +63,8 @@ namespace Breaker.Commands
 			foreach ( var target in targets )
 			{
 				target.Kick();
-				Logging.Info( $"Kicked {target} for {reason}" );
 			}
+				Logging.TellAll( $"{Command.Caller} kicked {Logging.FormatClients(targets)} for {reason}" );
 		}
 
 		[Command( "ban" ), Permission( "breaker.ban" )]
@@ -61,9 +82,9 @@ namespace Breaker.Commands
 				bans.Add( entry );
 				target.Kick();
 				if(entry.IsPermanent)
-					Logging.Info( $"Permanently banned {target} for {reason}." );
+					Logging.TellAll( $"{Command.Caller} banned {Logging.FormatClients(targets)} permanently for {reason}." );
 				else
-					Logging.Info( $"Banned {target} for {reason} for {duration} seconds." );
+					Logging.TellAll( $"{Command.Caller} banned {Logging.FormatClients(targets)} for {entry.GetDurationString()} for {reason}." );
 			}
 			SaveBans();
 		}
@@ -74,9 +95,9 @@ namespace Breaker.Commands
 			foreach ( var target in targets )
 			{
 				bans.RemoveAll( b => b.SteamId == target.SteamId );
-				Logging.Info( $"Unbanned {target}." );
 			}
 			SaveBans();
+			Logging.TellAll( $"{Command.Caller} unbanned {Logging.FormatClients( targets )}." );
 		}
 
 		public static bool IsBanned(IClient cl)

@@ -7,7 +7,7 @@
 @namespace Breaker.UI
 
 <root>
-    <div class="header">
+    <div class="controls">
         <img src="https://cdn.discordapp.com/icons/834153880115085363/af4a52605f67eebab9d70884191a92e9.webp?size=64" />
         <div class="title">
             <label class="name">Breaker</label>
@@ -18,23 +18,14 @@
     <div class="main">
         <div class="commands">
             <row class="title">Commands</row>
-            <column class="list">
-                @foreach(var group in Command.GetAllClientGrouped().OrderBy(group => group.Key))
-                {
-                    @if(!string.IsNullOrEmpty(group.Key))
-                    {
-                        <button icon="folder" class="group" @onclick=@((ButtonEvent e) => {OnClickGroup(group.Key);})> @group.Key</button>
-                    }
-                    @foreach(var cmd in group)
-                    {
-                        <button icon="play_arrow" class="command" @onclick=@((ButtonEvent e ) => {OnClickCommand(cmd);})>@cmd.Name</button>
-                    }
-                }
-            </column>
-            
+            <column class="list" @ref=ListPanel />    
         </div>
         <div class="interact">
-            <h2 class="title" />
+            <label class="title" @ref=CommandTitleLabel />
+            <div class="wizard">
+                <div class="parameters" @ref=ParameterPanel />
+                <button Text="Run Command" class="run" icon="play_arrow" />
+            </div>
         </div>
     </div>
 </root>

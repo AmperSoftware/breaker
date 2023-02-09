@@ -45,19 +45,6 @@ namespace Breaker.UI
 			Instance = this;
 			SetClass( "hidden", true );
 		}
-		public void OnClickExit()
-		{
-			Debug.Log( $"Exiting menu..." );
-			Hide();
-		}
-		public void OnClickCommand(Command.CommandClientInfo cmd)
-		{
-			Debug.Log( $"Clicked on command {cmd.Key}" );
-		}
-
-		public void OnClickGroup(string group)
-		{
-			Debug.Log( $"Clicked on group {group}" );
-		}
+		
 	}
 }

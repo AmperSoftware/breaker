@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace Breaker.Commands
 {
-	[Category("Fun")]
+	[Category( "Fun" )]
 	public static class Fun
 	{
 		[Command( "slay" ), Permission( "breaker.slay" )]
-		public static void Slay(IEnumerable<IClient> targets)
+		public static void Slay( IEnumerable<IClient> targets )
 		{
-			Debug.Log( $"Slaying {targets.Count()} targets" );
-			foreach (var target in targets)
+			foreach ( var target in targets )
 			{
 				Debug.Log( $"Slaying target {target}" );
 
@@ -22,9 +21,42 @@ namespace Breaker.Commands
 				if ( pawn is Entity ent )
 				{
 					ent.Health = 0;
+					ent.LastAttacker = null;
 					ent.OnKilled();
 				}
 			}
+			Logging.TellAll( $"{Command.Caller} slayed {Logging.FormatClients( targets )}!" );
+		}
+
+		[Command( "slap" ), Permission( "breaker.slap" )]
+		public static void Slap(IEnumerable<IClient> targets, float force, float damage = 1)
+		{
+			foreach(var target in targets)
+			{
+
+				var pawn = target.Pawn;
+				var speed = Vector3.Random * force;
+				if(speed.z <= force / 4 ) 
+				{
+					speed = speed.WithZ( force / 4 );
+				}
+
+				Debug.Log( $"Slapping target {target} with force {force} ({speed})" );
+
+				if ( pawn is ModelEntity ent && ent.PhysicsEnabled )
+				{
+					DamageInfo dmg = DamageInfo.Generic( damage )
+												.WithForce( speed/10 );
+
+					// Force the player to be at least a bit above the ground
+					pawn.Position = pawn.Position.WithZ( pawn.Position.z + 10 );
+					// Then apply the velocity because not all gamemodes respect DamageInfo.Force
+					pawn.Velocity = pawn.Velocity += speed;
+
+					ent.TakeDamage( dmg );
+				}
+			}
+			Logging.TellAll($"{Command.Caller} slapped {Logging.FormatClients(targets)}!" );
 		}
 	}
 }

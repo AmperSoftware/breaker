@@ -76,8 +76,9 @@ namespace Breaker
 		/// <summary>
 		/// Deletes the current list of commands and generates a new one.
 		/// </summary>
-		[Event.Hotload]
-		[Event.Entity.PostSpawn]
+		//[Event.Hotload]
+		//[Event.Entity.PostSpawn]
+		[BRKEvent.ConfigLoaded]
 		public static void LoadAll()
 		{
 			commands.Clear();
@@ -131,6 +132,7 @@ namespace Breaker
 							continue;
 						}
 
+						Debug.Log( $"Alias for {name}: {alias}" );
 						aliasToCommand.Add( alias, info );
 					}
 
