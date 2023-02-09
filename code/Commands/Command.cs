@@ -82,6 +82,7 @@ namespace Breaker
 		public static void LoadAll()
 		{
 			commands.Clear();
+			aliasToCommand.Clear();
 			NetworkCommandClear();
 
 			var types = TypeLibrary.GetTypes();

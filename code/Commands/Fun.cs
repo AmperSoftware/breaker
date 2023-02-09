@@ -20,9 +20,11 @@ namespace Breaker.Commands
 				var pawn = target.Pawn;
 				if ( pawn is Entity ent )
 				{
-					ent.Health = 0;
-					ent.LastAttacker = null;
-					ent.OnKilled();
+					ent.TakeDamage( DamageInfo.Generic( ent.Health * 2 ) );
+					if(ent.LifeState == LifeState.Alive)
+					{
+						ent.OnKilled();
+					}
 				}
 			}
 			Logging.TellAll( $"{Command.Caller} slayed {Logging.FormatClients( targets )}!" );
@@ -49,7 +51,7 @@ namespace Breaker.Commands
 												.WithForce( speed/10 );
 
 					// Force the player to be at least a bit above the ground
-					pawn.Position = pawn.Position.WithZ( pawn.Position.z + 10 );
+					// pawn.Position = pawn.Position.WithZ( pawn.Position.z + 10 );
 					// Then apply the velocity because not all gamemodes respect DamageInfo.Force
 					pawn.Velocity = pawn.Velocity += speed;
 
