@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using Breaker;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace Breaker
 		}
 		#endregion
 
-		[Command("whitelist")]
+		[Command("whitelist"), Permission("breaker.whitelist.manage")]
 		private static void Manage([Title("add/remove")] string action, IEnumerable<IClient> clients)
 		{
 			switch ( action.ToLower() )
@@ -51,7 +52,7 @@ namespace Breaker
 					return;
 			}
 		}
-		[Command( "whitelistoffline" )]
+		[Command( "whitelistoffline" ), Permission( "breaker.whitelist.manage" )]
 		private static void ManageOffline( [Title( "add/remove" )] string action, long user )
 		{
 			switch ( action.ToLower() )
@@ -93,7 +94,8 @@ namespace Breaker
 		{
 			Remove( cl.SteamId );
 		}
-		private const string WHITELIST_PERMISSION = "breaker.whitelist";
+		private const string WHITELIST_PERMISSION = "breaker.whitelist.bypass";
+		[Permission( WHITELIST_PERMISSION )]
 		public static bool IsWhitelisted( long id )
 		{
 			if ( !User.Exists( id ) )
