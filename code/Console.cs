@@ -17,9 +17,9 @@ namespace Breaker
 		public static class Commands
 		{
 			[ConCmd.Server( "brk" )]
-			public static void RunCommand(string command, string p1 = "", string p2 = "", string p3 = "", string p4 = "" )
+			public static void RunCommand(string command, string p1 = "", string p2 = "", string p3 = "", string p4 = "", string p5 = "", string p6 = "" )
 			{
-				var parameters = new string[] { p1, p2, p3, p4 };
+				var parameters = new string[] { p1, p2, p3, p4, p5, p6 };
 				Command.Execute( command, ConsoleSystem.Caller, parameters.Where( p => !string.IsNullOrEmpty( p ) ).ToArray() );
 			}
 			[Command( "menu" ), Permission( "breaker.menu" )]
@@ -30,13 +30,13 @@ namespace Breaker
 			[Command("reload"), Permission("breaker.reload")]
 			public static void Reload()
 			{
-				Logging.Info( "Reloading..." );
+				Logging.TellCaller( "Reloading..." );
 				Config.Load();
 				
-				Logging.Info("Finished Reloading!");
-				Logging.Info( $"{Command.All.Count} commands loaded" );
-				Logging.Info( $"{User.All.Count} users loaded" );
-				Logging.Info( $"{UserGroup.All.Count} user groups loaded" );
+				Logging.TellCaller( "Finished Reloading!");
+				Logging.TellCaller( $"{Command.All.Count} commands loaded" );
+				Logging.TellCaller( $"{User.All.Count} users loaded" );
+				Logging.TellCaller( $"{UserGroup.All.Count} user groups loaded" );
 			}
 
 			const int COMMANDS_PER_PAGE = 10;
@@ -52,8 +52,8 @@ namespace Breaker
 				if(pageCount < 1)
 					pageCount = 1;
 
-				Logging.Info( $"{length} commands currently registered." );
-				Logging.Info( $"Page {page} of {pageCount}" );
+				Logging.TellCaller( $"{length} commands currently registered." );
+				Logging.TellCaller( $"Page {page} of {pageCount}" );
 				for ( int i = COMMANDS_PER_PAGE * (page-1); i < length; i++ )
 				{
 					PrintCommand( cmds[i] );
@@ -72,7 +72,7 @@ namespace Breaker
 				if ( !string.IsNullOrEmpty( desc ) )
 					name += $"| {desc}";
 				
-				Logging.Info( $"- {name}" );
+				Logging.TellCaller( $"- {name}" );
 			}
 			private static string PrettyParamName(ParameterInfo p)
 			{
