@@ -56,6 +56,7 @@ namespace Breaker.Commands
 					pawn.Velocity = pawn.Velocity += speed;
 
 					ent.TakeDamage( dmg );
+					ent.PlaySound( "slap" );
 				}
 			}
 			Logging.TellAll($"{Command.Caller} slapped {Logging.FormatClients(targets)}!" );

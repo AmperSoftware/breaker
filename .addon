@@ -5,7 +5,7 @@
   "Ident": "breaker",
   "Tags": "admin, user",
   "Schema": 1,
-  "HasAssets": false,
+  "HasAssets": true,
   "AssetsPath": "",
   "ResourcePaths": null,
   "HasCode": true,
