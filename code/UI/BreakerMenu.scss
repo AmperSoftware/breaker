@@ -1,0 +1,32 @@
+﻿BreakerMenu {
+    background-color: rgba(128, 128, 96, 0.5);
+    width: 30%;
+    height: 50%;
+    margin:auto;
+    font-family: 'Segoe UI';
+
+    .header {
+
+        background-color: rgba(128, 128, 96, 0.5);
+        width: 100%;
+        height: 10%;
+
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        color: #FFFFFF;
+        align-items: center;
+        
+        img {
+            width: 48px;
+            height: 48px;
+            margin: 15px;
+        }
+        
+        .name {
+            color:#FFFF22;
+            margin-right: 5px;
+            font-size: 36px;
+        }
+    }
+}

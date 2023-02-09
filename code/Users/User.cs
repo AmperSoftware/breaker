@@ -38,7 +38,7 @@ namespace Breaker
 		{
 			if ( users.ContainsKey( user.SteamID ) )
 			{
-				Logging.LogError( $"Tried to register user with duplicate id {user.SteamID}! " );
+				Logging.Error( $"Tried to register user with duplicate id {user.SteamID}! " );
 				return;
 			}
 			users.Add( user.SteamID, user );
@@ -59,7 +59,7 @@ namespace Breaker
 		{
 			if ( !Exists( user ))
 			{
-				Logging.LogError( $"Tried to update user with id {user.SteamID} which doesnt exist!" );
+				Logging.Error( $"Tried to update user with id {user.SteamID} which doesnt exist!" );
 				return;
 			}
 			users[user.SteamID] = user;

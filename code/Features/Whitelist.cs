@@ -47,7 +47,7 @@ namespace Breaker
 						Remove( cl );
 					return;
 				default:
-					Logging.LogError( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
+					Logging.Error( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
 					return;
 			}
 		}
@@ -63,7 +63,7 @@ namespace Breaker
 					Remove( user );
 					return;
 				default:
-					Logging.LogError( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
+					Logging.Error( $"Invalid action '{action}'! Valid actions are 'add' and 'remove'." );
 					return;
 			}
 		}

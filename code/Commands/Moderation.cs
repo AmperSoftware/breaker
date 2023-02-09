@@ -41,7 +41,7 @@ namespace Breaker.Commands
 			foreach ( var target in targets )
 			{
 				target.Kick();
-				Logging.LogInfo( $"Kicked {target} for {reason}" );
+				Logging.Info( $"Kicked {target} for {reason}" );
 			}
 		}
 
@@ -60,9 +60,9 @@ namespace Breaker.Commands
 				bans.Add( entry );
 				target.Kick();
 				if(entry.IsPermanent)
-					Logging.LogInfo( $"Permanently banned {target} for {reason}." );
+					Logging.Info( $"Permanently banned {target} for {reason}." );
 				else
-					Logging.LogInfo( $"Banned {target} for {reason} for {duration} seconds." );
+					Logging.Info( $"Banned {target} for {reason} for {duration} seconds." );
 			}
 			SaveBans();
 		}
@@ -73,7 +73,7 @@ namespace Breaker.Commands
 			foreach ( var target in targets )
 			{
 				bans.RemoveAll( b => b.SteamId == target.SteamId );
-				Logging.LogInfo( $"Unbanned {target}." );
+				Logging.Info( $"Unbanned {target}." );
 			}
 			SaveBans();
 		}

@@ -20,7 +20,7 @@ namespace Breaker
 			if ( !Enabled() )
 				return;
 
-			Logging.LogInfo($"[Debug] {message}");
+			Logging.Info($"[Debug] {message}");
 		}
 		public static void Log( object message )
 		{

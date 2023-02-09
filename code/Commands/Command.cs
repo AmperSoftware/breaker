@@ -15,6 +15,19 @@ namespace Breaker
 {
 	public static class Command
 	{
+		public struct ContextInfo
+		{
+			public IClient Caller;
+			public float CallTick;
+			public DateTime CallTime;
+
+			public ContextInfo( IClient caller )
+			{
+				Caller = caller;
+				CallTick = Time.Tick;
+				CallTime = DateTime.Now;
+			}
+		}
 		public struct CommandInfo
 		{
 			public CommandAttribute Attribute;
@@ -28,6 +41,7 @@ namespace Breaker
 		}
 		private static Dictionary<string, CommandInfo> commands = new();
 		public static IReadOnlyDictionary<string, CommandInfo> All => commands.AsReadOnly();
+		public static ContextInfo Context { get; private set; }
 		/// <summary>
 		/// Deletes the current list of commands and generates a new one.
 		/// </summary>
@@ -90,11 +104,10 @@ namespace Breaker
 					}
 				}
 			}
-			
 			ParameterInfo[] parameters = method.Parameters;
 			
 			int parameterCount = parameters.Length;
-			int requiredParameters = parameterCount - parameters.Count( p => p.DefaultValue != null );
+			int requiredParameters = parameterCount - parameters.Count( p => p.IsOptional || p.ParameterType == typeof(ContextInfo));
 			if(parameterCount > 0)
 			{
 				if(args == default)
@@ -109,7 +122,6 @@ namespace Breaker
 					Log.Error( $"Tried to execute command {command} but the parameter count doesn't match the argument count!" );
 					return;
 				}
-
 				var parameterTypes = parameters.Select( p => p.ParameterType );
 				var parameterValues = new object[parameterCount];
 				for ( int i = 0; i < parameterCount; i++ )
@@ -125,51 +137,11 @@ namespace Breaker
 					}
 					
 					string arg = args[i];
-					object value = null;
-					if ( !type.IsAssignableFrom( arg.GetType() ) )
+					var value = ParseType( caller, type, arg );
+					if(value == null)
 					{
-						try
-						{
-							value = Convert.ChangeType( arg, type );
-							Debug.Log( $"Converted {arg} to type {type}" );
-						}
-						catch(InvalidCastException)
-						{
-							// We cant cast with the builtin parsers, try custom ones
-
-							bool parsed = false;
-							
-							
-							var parsers = GetParsers( type );
-							var parserCount = parsers?.Count();
-							if ( parsers == null || parserCount == 0 )
-							{
-								Logging.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be parsed!" );
-								return;
-							}
-							Debug.Log( $"Found {parserCount} parsers for type {type}!" );
-							foreach ( var parser in parsers )
-							{
-								Debug.Log( $"Trying out parser {parser}" );
-								value = parser.Parse( caller, arg );
-								if ( value != default && type.IsAssignableFrom( value.GetType() ) )
-								{
-									Debug.Log( $"Successfully parsed {arg} to {value}!" );
-									parsed = true;
-									break;
-								}
-							}
-
-							if ( !parsed )
-							{
-								Logging.LogError( $"Tried to execute command {command} but the argument {arg} couldn't be converted to {type}!" );
-								return;
-							}
-						}
-					}
-					else
-					{
-						value = arg;
+						Logging.Error( $"Tried to execute command {command} but the argument {arg} couldn't be converted to {type}!" );
+						return;
 					}
 
 					parameterValues[i] = value;
@@ -181,20 +153,72 @@ namespace Breaker
 					Debug.Log( $"- {p}" );
 				}
 
+				Context = new( caller );
 				method.Invoke( null, parameterValues );
 			}
 			else
 			{
+				Debug.Log( $"Executing {command} without parameters" );
+
+				Context = new( caller );
 				method.Invoke( null, null );
 			}
 		}
-		public static IEnumerable<ICommandParser<T>> GetParsers<T>()
+
+		private static object ParseType( IClient caller, Type type, string arg)
+		{
+			if ( type.IsAssignableFrom( arg.GetType() ) )
+			{
+				return arg;
+			}
+
+			object value = null;
+			try
+			{
+				value = Convert.ChangeType( arg, type );
+				Debug.Log( $"Converted {arg} to type {type}" );
+			}
+			catch ( InvalidCastException )
+			{
+				// We cant cast with the builtin parsers, try custom ones
+
+				bool parsed = false;
+
+				var parsers = GetParsers( type );
+				var parserCount = parsers?.Count();
+				if ( parsers == null || parserCount == 0 )
+				{
+					return null;
+				}
+
+				Debug.Log( $"Found {parserCount} parsers for type {type}!" );
+				foreach ( var parser in parsers )
+				{
+					Debug.Log( $"Trying out parser {parser}" );
+					value = parser.Parse( caller, arg );
+					if ( value != default && type.IsAssignableFrom( value.GetType() ) )
+					{
+						Debug.Log( $"Successfully parsed {arg} to {value}!" );
+						parsed = true;
+						break;
+					}
+				}
+
+				if ( !parsed )
+				{
+					return null;
+				}
+			}
+
+			return value;
+		}
+		private static IEnumerable<ICommandParser<T>> GetParsers<T>()
 		{
 			return TypeLibrary.GetTypes<ICommandParser<T>>()
 								.Select(t => t.Create<ICommandParser<T>>());
 		}
 		
-		public static IEnumerable<ICommandParser> GetParsers(Type t)
+		private static IEnumerable<ICommandParser> GetParsers(Type t)
 		{
 			return TypeLibrary.GetTypes()
 									   .Where( td =>
@@ -230,7 +254,7 @@ namespace Breaker
 	public class CommandAttribute : Attribute
 	{
 		public string Name { get; set; }
-
+		public string Description { get; set; }
 		public CommandAttribute(string name)
 		{
 			Name = name;
