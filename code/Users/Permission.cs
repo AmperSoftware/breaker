@@ -18,7 +18,33 @@ namespace Breaker
 		{
 			var permissions = user.GetPermissions();
 
+			foreach(var wildcard in user.GetPermissions().Where(p => p.EndsWith(".*")))
+			{
+				if ( CheckWildcard( wildcard, permission ) )
+					return true;
+			}
+
 			return permissions.Contains( permission );
+		}
+
+		private static bool CheckWildcard( string wildcard, string permission )
+		{
+			var wildcardParts = wildcard.Split( '.' );
+			var permissionParts = permission.Split( '.' );
+			if ( wildcardParts.Length > permissionParts.Length )
+				return false;
+
+			// Check if the generic permission matches the permission we are looking for
+			for ( int i = 0; i < wildcardParts.Length; i++ )
+			{
+				if ( wildcardParts[i] != permissionParts[i] )
+					break;
+
+				if ( i == wildcardParts.Length - 1 )
+					return true;
+			}
+
+			return false;
 		}
 	}
 	[AttributeUsage( AttributeTargets.Method, AllowMultiple = true )]
