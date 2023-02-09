@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Breaker
 {
+	[Category("Whitelist")]
 	public static class Whitelist
 	{
 		#region Persistent Whitelist

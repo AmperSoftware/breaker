@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Breaker.Commands
 {
+	[Category( "User Groups" )]
 	public static class GroupManagement
 	{
 		[Command( "getgroups" )]

@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using Breaker.UI;
+using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Breaker
 {
+	[Category("Basic")]
 	public static class Console
 	{
 		/// <summary>
@@ -25,7 +27,8 @@ namespace Breaker
 			[Command( "menu" ), Permission( "breaker.menu" )]
 			public static void OpenMenu()
 			{
-				Debug.Log( "Opening Menu" );
+				Debug.Log( "Opening Menu..." );
+				BreakerMenu.Show(To.Single(Command.Caller));
 			}
 			[Command("reload"), Permission("breaker.reload")]
 			public static void Reload()

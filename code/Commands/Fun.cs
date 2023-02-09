@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Breaker.Commands
 {
+	[Category("Fun")]
 	public static class Fun
 	{
 		[Command( "slay" ), Permission( "breaker.slay" )]

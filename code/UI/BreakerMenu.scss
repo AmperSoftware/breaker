@@ -1,32 +1,130 @@
 ﻿BreakerMenu {
-    background-color: rgba(128, 128, 96, 0.5);
-    width: 30%;
-    height: 50%;
-    margin:auto;
+    width: 45%;
+    height: 60%;
+    margin: auto;
     font-family: 'Segoe UI';
+    pointer-events: all;
+    flex-direction: column;
 
     .header {
-
-        background-color: rgba(128, 128, 96, 0.5);
+        background-color: #444;
         width: 100%;
-        height: 10%;
-
+        height: 15%;
         text-align: center;
-        font-size: 32px;
-        font-weight: bold;
+        font-size: 36px;
         color: #FFFFFF;
         align-items: center;
-        
+        flex-direction: row;
+        border-radius: 20px 20px 0 0;
+
         img {
-            width: 48px;
-            height: 48px;
-            margin: 15px;
+            height: 100%;
+            width: 24px;
+            aspect-ratio: 1;
+            margin-left: 15px;
+            flex-grow: 1;
         }
-        
-        .name {
-            color:#FFFF22;
-            margin-right: 5px;
-            font-size: 36px;
+
+        .title {
+            flex-grow: 8;
+            justify-content: center;
+
+            .name {
+                color: #EE2;
+                padding-right: 10px;
+                font-weight: bold;
+            }
         }
+
+        button {
+            flex-grow: 1;
+        }
+    }
+
+    .main {
+        background-color: #77776A;
+        height: 100%;
+        border-radius: 0 0 20px 20px;
+
+        .commands {
+            flex-direction: column;
+            overflow: scroll;
+            flex-grow: 3;
+
+            .title {
+                color: #FF2;
+                text-align: center;
+                font-size: 28px;
+                margin: 5px;
+                flex-basis: 24px;
+                font-weight: bolder;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .list {
+                border-top: 5px solid black;
+                border-bottom: 5px solid black;
+                flex-direction: column;
+                margin: 10px;
+                padding: 5px;
+                flex-wrap: nowrap;
+                flex-shrink: 0;
+
+                .group {
+                    align-items: center;
+                    width: 90%;
+                    background-color: #222;
+                    color: #FFF;
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-left: 10px;
+                    margin-right: 10px;
+                    margin-top: 5px;
+                    flex-basis: 24px;
+                }
+
+                .command {
+                    align-items: center;
+                    width: 85%;
+                    background-color: #333;
+                    color: #FFF;
+                    text-align: center;
+                    font-size: 18px;
+                    margin-left: 10px;
+                    margin-right: 10px;
+                    margin-top: 5px;
+                    flex-basis: 24px;
+
+
+                    &.hover {
+                        background-color: #888;
+                    }
+                }
+
+                icon {
+                    flex-grow: 1;
+                }
+
+                label {
+                    flex-grow: 10;
+                    justify-content: center;
+                }
+            }
+        }
+
+        .interact {
+            flex-direction: column;
+            flex-grow: 5;
+            color: #FFF;
+            border: 5px solid black;
+            border-radius: 10px;
+            margin: 20px;
+        }
+    }
+
+    &.hidden {
+        display: none;
     }
 }

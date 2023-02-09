@@ -10,7 +10,9 @@ namespace Breaker.Commands
 {
 	public abstract class SplitListParser<T> : ICommandParser<IEnumerable>
 	{
+#pragma warning disable SB3000 // Hotloading not supported
 		const char SPLIT_CHAR = ';';
+#pragma warning restore SB3000 // Hotloading not supported
 		public virtual IEnumerable Parse( IClient caller, string input )
 		{
 			if ( !input.Contains( SPLIT_CHAR ) )

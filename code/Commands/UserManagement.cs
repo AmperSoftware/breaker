@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Breaker.Commands
 {
+	[Category("User Management")]
 	public static class UserManagement
 	{
 		[Command("getusers")]

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Breaker.Commands
 {
+	[Category("Moderation")]
 	public static class Moderation
 	{
 		#region Moderation Persistence
