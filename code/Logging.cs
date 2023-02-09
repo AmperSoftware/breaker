@@ -12,19 +12,33 @@ namespace Breaker
 {
 	public static partial class Logging
 	{
-		[Command("tell")]
-		public static void TellClient( IClient client, string message )
+		public static void TellClient( IClient client, string message, MessageType type = MessageType.Info )
 		{
 			if ( client == null ) return;
 
-			TellClientRPC( To.Single( client ), message );
+			TellClientRPC( To.Single( client ), message, type );
+		}
+		public static void TellCaller(string message, MessageType type = MessageType.Info )
+		{
+			TellClient( Command.Caller, message, type );
 		}
 		
 		[ClientRpc]
-		internal static void TellClientRPC( string message )
+		internal static void TellClientRPC( string message, MessageType type )
 		{
-			Info( message );
-			return;
+			switch(type)
+			{
+				case MessageType.Info:
+					Info( message );
+					break;
+				case MessageType.Error:
+					Error( message );
+					break;
+				case MessageType.Announcement:
+					// TODO: Make this fancier
+					Info( $"[ANNOUNCEMENT] {message}" );
+					break;
+			}
 		}
 		public static void Info(object message)
 		{
@@ -35,5 +49,11 @@ namespace Breaker
 		{
 			Log.Error( $"[Breaker] {message}" );
 		}
+	}
+	public enum MessageType
+	{
+		Info,
+		Error,
+		Announcement
 	}
 }

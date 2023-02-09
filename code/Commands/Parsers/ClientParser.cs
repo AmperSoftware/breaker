@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Breaker
+namespace Breaker.Commands
 {
 	public class ClientParser : ICommandParser<IClient>
 	{
@@ -14,8 +14,8 @@ namespace Breaker
 			Debug.Log( $"Parsing input {input} with caller {caller}" );
 			if ( input.StartsWith( '@' ) )
 			{
-				
-				input = string.Join("",input.Skip( 1 ));
+
+				input = string.Join( "", input.Skip( 1 ) );
 				if ( singleSelectors.TryGetValue( input, out var selector ) )
 				{
 					Debug.Log( $"Using selector {input}" );
@@ -23,13 +23,13 @@ namespace Breaker
 				}
 			}
 
-			if (long.TryParse(input, out var id))
+			if ( long.TryParse( input, out var id ) )
 			{
 				return Game.Clients.FirstOrDefault( c => c.SteamId == id );
 			}
 			else
 			{
-				return Game.Clients.FirstOrDefault( c => c.Name.Contains(input) );
+				return Game.Clients.FirstOrDefault( c => c.Name.Contains( input ) );
 			}
 		}
 		object ICommandParser.Parse( IClient caller, string input ) => Parse( caller, input );
@@ -48,7 +48,7 @@ namespace Breaker
 						return selector( caller, input );
 					}
 				}
-				
+
 				return Game.Clients.Where( c => c.Name.Contains( input ) );
 			}
 
@@ -62,7 +62,7 @@ namespace Breaker
 			{ "self", SelectSelf },
 			{ "random", SelectRandom }
 		};
-		public static bool RegisterSingleSelector(string id, Func<IClient, string, IClient> selector)
+		public static bool RegisterSingleSelector( string id, Func<IClient, string, IClient> selector )
 		{
 			if ( singleSelectors.ContainsKey( id ) )
 				return false;
@@ -77,7 +77,7 @@ namespace Breaker
 		{
 			{ "all", SelectAll }
 		};
-		public static bool RegisterMultiSelector(string id, Func<IClient, string, IEnumerable<IClient>> selector)
+		public static bool RegisterMultiSelector( string id, Func<IClient, string, IEnumerable<IClient>> selector )
 		{
 			if ( multiSelectors.ContainsKey( id ) )
 				return false;

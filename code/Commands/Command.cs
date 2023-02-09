@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using Breaker;
+using Sandbox;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace Breaker
 		private static Dictionary<string, CommandInfo> commands = new();
 		public static IReadOnlyDictionary<string, CommandInfo> All => commands.AsReadOnly();
 		public static ContextInfo Context { get; private set; }
+		public static IClient Caller => Context.Caller;
 		/// <summary>
 		/// Deletes the current list of commands and generates a new one.
 		/// </summary>
@@ -95,7 +97,7 @@ namespace Breaker
 			var permissions = info.Method.Attributes.OfType<PermissionAttribute>();
 			if(permissions.Any())
 			{
-				foreach(var perm in permissions)
+				foreach(var perm in permissions.Where(p => !p.ManualEnforcement))
 				{
 					if ( !caller.HasPermission( perm ) )
 					{

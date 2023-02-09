@@ -73,6 +73,18 @@ namespace Breaker
 		}
 
 		public static void Remove( UserGroup group ) => Remove( group.Id );
+		public static void Update(UserGroup group)
+		{
+			if ( !groups.ContainsKey( group.Id ) )
+			{
+				Logging.Error( $"Tried to update group with id {group.Id} which doesnt exist!" );
+				return;
+			}
+
+			groups[group.Id] = group;
+
+			Save();
+		}
 		public static bool Exists( string id ) => groups.ContainsKey( id );
 		#endregion
 		public static UserGroup GetDefault()
@@ -84,17 +96,6 @@ namespace Breaker
 			}
 
 			return UserGroup.All.Select( kv => kv.Value ).OrderBy( g => g.Weight ).First();
-		}
-		public UserGroup()
-		{
-			// Required for JSON
-		}
-
-		public UserGroup( string id, int weight, List<string> permissions )
-		{
-			Id = id;
-			Weight = weight;
-			Permissions = permissions;
 		}
 
 		public string Id { get; set; }
@@ -116,8 +117,19 @@ namespace Breaker
 		/// </summary>
 		public int Weight { get; set; }
 		public List<string> Permissions { get; set; } = new();
+		public UserGroup()
+		{
+			// Required for JSON
+		}
 
-		public bool CanTarget( UserGroup target, string command )
+		public UserGroup( string id, int weight, List<string> permissions )
+		{
+			Id = id;
+			Weight = weight;
+			Permissions = permissions;
+		}
+
+		public bool CanTarget( UserGroup target, string command = "" )
 		{
 			return target.Weight < Weight;
 		}
