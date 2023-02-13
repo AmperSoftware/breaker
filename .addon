@@ -18,7 +18,7 @@
     "RenderMaxs": "-1,-1,-1",
     "Summary": "A player and permission management system",
     "Description": "",
-    "Public": false,
+    "Public": true,
     "ReplaceTags": "admin permissions management server community",
     "Compiler": {
       "RootNamespace": "Breaker",
