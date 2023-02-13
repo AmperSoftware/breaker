@@ -18,7 +18,7 @@ namespace Breaker
 		/// <param name="args">The arguments to pass to the command.</param>
 		public static void Execute( string command, IClient caller, string[] args )
 		{
-			CommandInfo info = null;
+			Info info = null;
 			if ( !commands.TryGetValue( command, out info ) && !aliasToCommand.TryGetValue( command, out info ) )
 			{
 				Log.Error( $"Tried to execute command {command} but it doesn't exist!" );
@@ -56,17 +56,17 @@ namespace Breaker
 					Log.Error( $"Tried to execute command {command} but the parameter count doesn't match the argument count!" );
 					return;
 				}
-				var parameterTypes = parameters.Select( p => p.ParameterType );
+				var parameterTypes = parameters.Select( p => p.ParameterType ).ToList();
 				var parameterValues = new object[parameterCount];
 				for ( int i = 0; i < parameterCount; i++ )
 				{
-					var type = parameterTypes.ElementAt( i );
+					var type = parameterTypes[i];
 
 					Debug.Log( $"Element {i} in {argsCount}" );
 					if ( i >= argsCount )
 					{
 						Debug.Log( $"Using default value" );
-						parameterValues[i] = parameters.ElementAt( i ).DefaultValue;
+						parameterValues[i] = parameters[i].DefaultValue;
 						continue;
 					}
 
@@ -119,9 +119,10 @@ namespace Breaker
 				bool parsed = false;
 
 				var parsers = GetParsers( type );
-				var parserCount = parsers?.Count();
+				var parserCount = parsers == default ? 0 : parsers.Length;
 				if ( parsers == null || parserCount == 0 )
 				{
+					Debug.Log( $"No parsers found for type {type}!" );
 					return null;
 				}
 
@@ -146,22 +147,17 @@ namespace Breaker
 
 			return value;
 		}
-		private static IEnumerable<ICommandParser<T>> GetParsers<T>()
-		{
-			return TypeLibrary.GetTypes<ICommandParser<T>>()
-								.Select( t => t.Create<ICommandParser<T>>() );
-		}
-
-		private static IEnumerable<ICommandParser> GetParsers( Type t )
+		private static ICommandParser[] GetParsers( Type t )
 		{
 			return TypeLibrary.GetTypes()
 									   .Where( td =>
-										   td.Interfaces.Any(
+											td.Interfaces.Any(
 											   i => i.IsAssignableTo( typeof( ICommandParser ) )
-												   && i.FullName.Contains( t.Name )
+												   && i.FullName?.Contains( t.Name ) == true
 										   )
 									   )
-									   .Select( td => td.Create<ICommandParser>() );
+									   .Select( td => td.Create<ICommandParser>() )
+									   .ToArray();
 		}
 	}
 }

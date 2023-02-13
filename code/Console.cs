@@ -18,12 +18,18 @@ namespace Breaker
 		/// </summary>
 		public static class Commands
 		{
+			#region S&box commands
 			[ConCmd.Server( "brk" )]
 			public static void RunCommand( string command, string p1 = "", string p2 = "", string p3 = "", string p4 = "", string p5 = "", string p6 = "" )
 			{
 				var parameters = new string[] { p1, p2, p3, p4, p5, p6 };
 				Command.Execute( command, ConsoleSystem.Caller, parameters.Where( p => !string.IsNullOrEmpty( p ) ).ToArray() );
 			}
+			// Theres no way to define aliases for ConCmds, so we have to do this.
+			[ConCmd.Server( "bkr" )] public static void RunCommandAlias1( string cmd, string p1 = "", string p2 = "", string p3 = "", string p4 = "", string p5 = "", string p6 = "" ) => RunCommand( cmd, p1, p2, p3, p4, p5, p6 );
+			[ConCmd.Server( "breaker" )] public static void RunCommandAlias2( string cmd, string p1 = "", string p2 = "", string p3 = "", string p4 = "", string p5 = "", string p6 = "" ) => RunCommand( cmd, p1, p2, p3, p4, p5, p6 );
+			#endregion S&box commands
+
 			[Command( "menu" ), Permission( "breaker.menu" )]
 			public static void OpenMenu()
 			{
@@ -78,7 +84,7 @@ namespace Breaker
 				}
 			}
 
-			private static void PrintCommand( KeyValuePair<string, Command.CommandInfo> cmd )
+			private static void PrintCommand( KeyValuePair<string, Command.Info> cmd )
 			{
 				string name = cmd.Key;
 				var p = Command.Parameters( name );
@@ -116,7 +122,7 @@ namespace Breaker
 					return "Vector";
 				if ( t == typeof( IClient ) )
 					return "Client";
-				if ( t == typeof( IEnumerable<IClient> ) )
+				if ( t == typeof( IClient[] ) )
 					return "Clients";
 				return t.Name;
 			}

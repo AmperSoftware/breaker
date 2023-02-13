@@ -11,7 +11,7 @@ namespace Breaker.Commands
 	public static class Fun
 	{
 		[Command( "slay" ), Permission( "breaker.slay" )]
-		public static void Slay( IEnumerable<IClient> targets )
+		public static void Slay( IClient[] targets )
 		{
 			foreach ( var target in targets )
 			{
@@ -27,11 +27,11 @@ namespace Breaker.Commands
 					}
 				}
 			}
-			Logging.TellAll( $"{Command.Caller} slayed {Logging.FormatClients( targets )}!" );
+			Logging.TellAll( $"{Command.Caller.Name} slayed {Logging.FormatClients( targets )}!" );
 		}
 
 		[Command( "slap" ), Permission( "breaker.slap" )]
-		public static void Slap(IEnumerable<IClient> targets, float force, float damage = 1)
+		public static void Slap( IClient[] targets, float force, float damage = 1)
 		{
 			foreach(var target in targets)
 			{
@@ -59,7 +59,7 @@ namespace Breaker.Commands
 					ent.PlaySound( "slap" );
 				}
 			}
-			Logging.TellAll($"{Command.Caller} slapped {Logging.FormatClients(targets)}!" );
+			Logging.TellAll($"{Command.Caller.Name} slapped {Logging.FormatClients(targets)}!" );
 		}
 	}
 }
