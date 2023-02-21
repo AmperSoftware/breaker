@@ -1,0 +1,15 @@
+name: Discord Notification
+
+on: [push]
+
+jobs:
+  Notify:
+    name: Notification
+    runs-on: [self-hosted, amper, main]
+    steps:
+      - name: Send Notification
+        uses: Retr0-01/better-discord-notification@main
+        with:
+          webhook-url: ${{ secrets.CI_DISCORD_WEBHOOK }}
+          embed-color: '1864927'
+          footer-icon: 'https://cdn.discordapp.com/attachments/717615348718764034/1077621142619168778/BreakerIconv1small.png'
