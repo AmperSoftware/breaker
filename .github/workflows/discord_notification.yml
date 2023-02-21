@@ -11,5 +11,5 @@ jobs:
         uses: Retr0-01/better-discord-notification@main
         with:
           webhook-url: ${{ secrets.CI_DISCORD_WEBHOOK }}
-          embed-color: '1864927'
+          embed-color: '186049027'
           footer-icon: 'https://cdn.discordapp.com/attachments/717615348718764034/1077621142619168778/BreakerIconv1small.png'
