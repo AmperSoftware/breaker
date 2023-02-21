@@ -3,7 +3,7 @@
   "Type": "addon",
   "Org": "amper",
   "Ident": "breaker",
-  "Tags": "admin, user",
+  "Tags": "user admin",
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
