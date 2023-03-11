@@ -44,14 +44,63 @@ namespace Breaker
 
 			public ParameterInfo[] GetParameters() => Method.Parameters;
 		}
+		
 		public class ClientInfo
 		{
+			public class Parameter
+			{
+				public string Key;
+				public string Name;
+				public string Type;
+				public string DefaultValue;
+
+				public Parameter( string key, string name, string type, string defaultValue )
+				{
+					Key = key;
+					Name = name;
+					Type = type;
+					DefaultValue = defaultValue;
+				}
+
+				public Parameter( ParameterInfo param)
+				{
+					Key = param.Name;
+					var title = param.GetCustomAttribute<TitleAttribute>();
+					if ( title != null )
+						Name = title.Value;
+					else
+						Name = Key;
+
+					Type = param.ParameterType.Name;
+					DefaultValue = param.DefaultValue.ToString();
+				}
+
+				public static Parameter Parse(string input)
+				{
+					var parts = input.Split( ';' );
+					if ( parts.Length < 2 )
+						return null;
+
+					var key = parts[0];
+					var type = parts[1];
+					var name = parts.Length > 2 ? parts[2] : key;
+					var defaultValue = parts.Length > 3 ? parts[3] : null;
+
+					return new Parameter( key, name, type, defaultValue );
+				}
+
+				public override string ToString()
+				{
+					return $"{Key};{Type};{Name};{DefaultValue}";
+				}
+			}
+
 			public string Key;
 			public string Name;
 			public string Group;
-			public string[] Parameters;
+			public Parameter[] Parameters;
 
-			public ClientInfo( string key, string name, string group = "", params string[] parameters )
+			public ClientInfo( string key, string name, string group = "", params Parameter[] parameters )
 			{
 				Key = key;
 				Name = name;
@@ -61,7 +110,7 @@ namespace Breaker
 
 			public static implicit operator ClientInfo( Info info )
 			{
-				return new ClientInfo( info.Attribute.Key, info.Name, info.Group, info.GetParameters().Select(p => p.Name).ToArray() );
+				return new ClientInfo( info.Attribute.Key, info.Name, info.Group, info.GetParameters().Select(p => new Parameter(p)).ToArray() );
 			}
 		}
 		private static Dictionary<string, Info> commands = new();
@@ -140,7 +189,7 @@ namespace Breaker
 
 					Debug.Log( $"Registering command {name}." );
 					commands.Add( name, info );
-					NetworkCommandInfo( name, title, group, method.Parameters.Select(p => p.Name).ToArray() );
+					NetworkCommandInfo( name, title, group, method.Parameters?.Select( p => p.ToString() ).ToArray() );
 				}
 			}
 		}
@@ -151,15 +200,15 @@ namespace Breaker
 		{
 			foreach(var kv in commands)
 			{
-				var cmd = kv.Value;
-				NetworkCommandInfo( To.Single( client ), kv.Key, cmd.Name, cmd.Group, cmd.GetParameters().Select(p => p.Name).ToArray() );
+				ClientInfo cmd = kv.Value;
+				NetworkCommandInfo( To.Single( client ), kv.Key, cmd.Name, cmd.Group, cmd.Parameters?.Select(p => p.ToString()).ToArray() );
 			}
 			
 		}
 		[ClientRpc]
 		public static void NetworkCommandInfo(string key, string name, string group = "", string[] parameters = default )
 		{
-			ClientInfo info = new( key, name, group, parameters );
+			ClientInfo info = new( key, name, group, parameters.Select(ClientInfo.Parameter.Parse).ToArray() );
 			clientCommands.Add( info );
 		}
 		[ClientRpc]

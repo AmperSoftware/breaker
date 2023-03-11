@@ -50,7 +50,7 @@
         .commands {
             flex-direction: column;
             overflow: scroll;
-            width:40%;
+            width: 40%;
 
             .title {
                 color: #FF2;
@@ -136,7 +136,7 @@
 
         .interact {
             flex-direction: column;
-            width:60%;
+            width: 60%;
             color: #FFF;
             border: 5px solid black;
             border-radius: 10px;
@@ -153,12 +153,29 @@
                 flex-grow: 0;
             }
 
-            .wizard {
+            .execution {
                 flex-direction: column;
                 height: 100%;
 
                 .parameters {
                     flex-grow: 99;
+                    flex-direction: column;
+
+                    .param {
+                        margin: 5px;
+                        font-size: 18px;
+                        font-weight: bold;
+
+                        .name {
+                            width: 20%;
+                        }
+
+                        textentry {
+                            background-color: rgba( #323845, 0.3 );
+                            margin-left: 10px;
+                            width: 80%;
+                        }
+                    }
                 }
 
                 .run {

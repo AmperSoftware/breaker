@@ -12,8 +12,20 @@ namespace Breaker.UI
 {
 	public partial class BreakerMenu
 	{
+		private class ParameterPanels
+		{
+			public Panel Root;
+			public TextEntry Input;
+
+			public ParameterPanels( Panel root, TextEntry input )
+			{
+				Root = root;
+				Input = input;
+			}
+		}
 		internal static IEnumerable<IGrouping<string, Command.ClientInfo>> groups => Command.GetAllClientGrouped();
 		private Dictionary<string, List<Panel>> groupPanels = new();
+		private Dictionary<string, ParameterPanels> parameterEntries = new();
 		Panel ListPanel { get; set; }
 		bool createdPanels = false;
 		Label CommandTitleLabel { get; set; }
@@ -98,14 +110,22 @@ namespace Breaker.UI
 		}
 		private void SetupCommandWizard(Command.ClientInfo cmd)
 		{
+			foreach ( var kv in parameterEntries )
+			{
+				kv.Value.Root.Delete(true);
+			}
+			parameterEntries.Clear();
+
 			CommandTitleLabel.Text = cmd.Key.ToUpper();
 			foreach(var p in cmd.Parameters)
 			{ 				
 				var paramPanel = ParameterPanel.AddChild<Panel>( "param" );
-				var paramLbl = paramPanel.AddChild<Label>( "text" );
-				paramLbl.Text = p;
+				var paramLbl = paramPanel.AddChild<Label>( "name" );
+				paramLbl.Text = p.Name.ToUpper();
 
-				//var paramInput = paramPanel.AddChild<TextEntry>( "input" );
+				var paramInput = paramPanel.AddChild<TextEntry>( "input" );
+				paramInput.Multiline = false;
+				parameterEntries.Add( p.Key, new(paramPanel, paramInput) );
 			}
 		}
 	}
