@@ -28,7 +28,7 @@ namespace Breaker
 			AddChild<BreakerMenu>();
 		}
 
-		//[Event.Client.Frame]
+		[Event.Client.Frame]
 		private static void OnFrame()
 		{
 			if ( Instance == null )
