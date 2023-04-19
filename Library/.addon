@@ -20,6 +20,10 @@
       "DefineConstants": "SANDBOX;ADDON;DEBUG",
       "NoWarn": "1701;1702;1591;",
       "References": []
-    }
+    },
+    "Summary": "Server Administration Library for your Games",
+    "Description": "Adds whitelists, reserved slots and moderation capabilities to your games (Can come in handy during playtests)",
+    "Public": true,
+    "ReplaceTags": "administration whitelist slots reserved ban kick admin"
   }
 }
