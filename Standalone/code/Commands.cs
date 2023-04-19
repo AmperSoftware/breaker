@@ -13,8 +13,10 @@ public static class Commands
 	[Command( "menu" ), Permission( "breaker.menu" )]
 	public static void OpenMenu()
 	{
-		Debug.Log( "Opening Menu..." );
-		BreakerMenu.Show( To.Single( Command.Caller ) );
+		Logging.TellCaller( "Menu has not been imlpemented yet, try again another time!" );
+
+		//Debug.Log( "Opening Menu..." );
+		//BreakerMenu.Show( To.Single( Command.Caller ) );
 	}
 
 	[Command( "slap" ), Permission( "breaker.slap" )]
@@ -22,7 +24,6 @@ public static class Commands
 	{
 		foreach ( var target in targets )
 		{
-
 			var pawn = target.Pawn;
 			var speed = Vector3.Random * force;
 			if ( speed.z <= force / 4 )
