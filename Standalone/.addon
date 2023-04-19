@@ -10,7 +10,9 @@
   "ResourcePaths": null,
   "HasCode": true,
   "CodePath": "/code/",
-  "PackageReferences": [],
+  "PackageReferences": [
+    "amper.breaker_lib"
+  ],
   "EditorReferences": null,
   "Metadata": {
     "PrimaryAsset": "",
@@ -23,11 +25,41 @@
     "Public": true,
     "ReplaceTags": "admin permissions management server community",
     "Compiler": {
-      "RootNamespace": "Breaker",
+      "RootNamespace": "Breaker.Addon",
       "DefineConstants": "SANDBOX;ADDON;DEBUG",
       "NoWarn": "1701;1702;1591;",
       "References": []
     },
-    "CsProjName": ""
+    "CsProjName": "",
+    "PackageSettings": [
+      {
+        "DisplayType": "Boolean",
+        "Choices": [],
+        "ConVarName": "breaker_whitelist_enabled",
+        "DisplayName": "Enable Whitelist",
+        "DefaultValue": "false",
+        "Description": "Should the Whitelist feature be enabled?",
+        "Group": "Features"
+      },
+      {
+        "DisplayType": "Integer",
+        "Choices": [],
+        "ConVarName": "breaker_reserved_slots",
+        "DisplayName": "Reserved Slots",
+        "DefaultValue": "0",
+        "Description": "How many Reserved Slots should there be? (0 disables this feature)",
+        "Group": "Features",
+        "Maximum": 128
+      },
+      {
+        "DisplayType": "Boolean",
+        "Choices": [],
+        "ConVarName": "breaker_debug",
+        "DisplayName": "Enable Debug",
+        "DefaultValue": "false",
+        "Description": "Prints debug information into the console.",
+        "Group": "Debug"
+      }
+    ]
   }
 }

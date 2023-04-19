@@ -1,5 +1,4 @@
-﻿using Breaker.UI;
-using Sandbox;
+﻿using Sandbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,12 +29,6 @@ namespace Breaker
 			[ConCmd.Server( "breaker" )] public static void RunCommandAlias2( string cmd, string p1 = "", string p2 = "", string p3 = "", string p4 = "", string p5 = "", string p6 = "" ) => RunCommand( cmd, p1, p2, p3, p4, p5, p6 );
 			#endregion S&box commands
 
-			[Command( "menu" ), Permission( "breaker.menu" )]
-			public static void OpenMenu()
-			{
-				Debug.Log( "Opening Menu..." );
-				BreakerMenu.Show( To.Single( Command.Caller ) );
-			}
 			[Command( "announce" ), Permission( "breaker.announce" )]
 			public static void Announce( string msg )
 			{

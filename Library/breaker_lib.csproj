@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>breaker_lib</AssemblyName>
+		<PackageId>breaker_lib</PackageId>
+		<LangVersion>11</LangVersion>
+		<NoWarn>1701;1702;1591;</NoWarn>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<DefineConstants>SANDBOX;ADDON;DEBUG</DefineConstants>
+		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Update="**\*.scss" DependentUpon="%(Filename).cs" />
+		<None Update="**\*.css" DependentUpon="%(Filename).cs" />
+		<None Update="**\*.sass" DependentUpon="%(Filename).cs" />
+		<None Update="**\*.html" DependentUpon="%(Filename).cs" />
+		<None Update="**\*.htm" DependentUpon="%(Filename).cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AdditionalFiles Include="**/*.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
+	</ItemGroup>
+
+  <PropertyGroup>
+	<OutputPath>..\..\../.vs/output/</OutputPath>
+	<DocumentationFile>..\..\../.vs/output/breaker_lib.xml</DocumentationFile>
+	<RootNamespace>Breaker</RootNamespace>
+	<Nullable>disable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll"/>
+		<Reference Include="..\..\..\bin\managed/Sandbox.System.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Engine.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Game.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Event.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Bind.dll" />
+		<Reference Include="..\..\..\bin\managed/Sandbox.Reflection.dll" />
+	</ItemGroup>
+
+  <ItemGroup>
+
+  </ItemGroup>
+
+</Project>

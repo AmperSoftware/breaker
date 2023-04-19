@@ -1,4 +1,4 @@
-﻿using Breaker.UI;
+﻿using Breaker.Addon.UI;
 using Sandbox;
 using Sandbox.UI;
 using System;
@@ -7,32 +7,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Breaker
+namespace Breaker.Addon;
+
+public partial class BreakerMainPanel : Panel
 {
-	public partial class BreakerMainPanel : Panel
+	public static BreakerMainPanel Instance { get; set; }
+
+	public BreakerMainPanel()
 	{
-		public static BreakerMainPanel Instance { get; set; }
+		if ( Instance != null )
+			return;
 
-		public BreakerMainPanel()
-		{
-			if ( Instance != null )
-				return;
+		Debug.Log( $"Creating main panel..." );
+		Instance = this;
+		Game.RootPanel.AddChild( this );
+		
+		Style.Width = Length.Percent(100);
+		Style.Height = Length.Percent( 100 );
 
-			Debug.Log( $"Creating main panel..." );
-			Instance = this;
-			Game.RootPanel.AddChild( this );
-			
-			Style.Width = Length.Percent(100);
-			Style.Height = Length.Percent( 100 );
+		AddChild<BreakerMenu>();
+	}
 
-			AddChild<BreakerMenu>();
-		}
-
-		//[Event.Client.Frame]
-		private static void OnFrame()
-		{
-			if ( Instance == null )
-				new BreakerMainPanel();
-		}
+	//[Event.Client.Frame]
+	private static void OnFrame()
+	{
+		if ( Instance == null )
+			new BreakerMainPanel();
 	}
 }

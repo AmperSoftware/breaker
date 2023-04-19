@@ -31,7 +31,7 @@
   <PropertyGroup>
 	<OutputPath>..\..\..\../.vs/output/</OutputPath>
 	<DocumentationFile>..\..\..\../.vs/output/breaker.xml</DocumentationFile>
-	<RootNamespace>Breaker</RootNamespace>
+	<RootNamespace>Breaker.Addon</RootNamespace>
 	<Nullable>disable</Nullable>
   </PropertyGroup>
 
@@ -46,6 +46,7 @@
 	</ItemGroup>
 
   <ItemGroup>
+		<ProjectReference Include="B:\SteamLibrary\steamapps\common\sbox\addons\breaker\Library\breaker_lib.csproj" />
 		<ProjectReference Include="B:\SteamLibrary\steamapps\common\sbox\addons\base\code\Base Library.csproj" />
 
   </ItemGroup>

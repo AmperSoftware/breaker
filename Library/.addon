@@ -1,7 +1,7 @@
 {
   "Title": "Breaker - Admin System",
   "Type": "library",
-  "Org": "local",
+  "Org": "amper",
   "Ident": "breaker_lib",
   "Tags": null,
   "Schema": 1,
@@ -13,6 +13,13 @@
   "PackageReferences": [],
   "EditorReferences": null,
   "Metadata": {
-    "ProjectTemplate": null
+    "ProjectTemplate": null,
+    "CsProjName": "",
+    "Compiler": {
+      "RootNamespace": "Breaker",
+      "DefineConstants": "SANDBOX;ADDON;DEBUG",
+      "NoWarn": "1701;1702;1591;",
+      "References": []
+    }
   }
 }

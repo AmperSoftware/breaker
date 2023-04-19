@@ -30,38 +30,6 @@ namespace Breaker.Commands
 			Logging.TellAll( $"{Command.CallerName} slayed {Logging.FormatClients( targets )}!" );
 		}
 
-		[Command( "slap" ), Permission( "breaker.slap" )]
-		public static void Slap( IClient[] targets, float force, float damage = 1)
-		{
-			foreach(var target in targets)
-			{
-
-				var pawn = target.Pawn;
-				var speed = Vector3.Random * force;
-				if(speed.z <= force / 4 ) 
-				{
-					speed = speed.WithZ( force / 4 );
-				}
-
-				Debug.Log( $"Slapping target {target} with force {force} ({speed})" );
-
-				if ( pawn is ModelEntity ent && ent.PhysicsEnabled )
-				{
-					DamageInfo dmg = DamageInfo.Generic( damage )
-												.WithForce( speed/10 );
-
-					// Force the player to be at least a bit above the ground
-					// pawn.Position = pawn.Position.WithZ( pawn.Position.z + 10 );
-					// Then apply the velocity because not all gamemodes respect DamageInfo.Force
-					pawn.Velocity = pawn.Velocity += speed;
-
-					ent.TakeDamage( dmg );
-					ent.PlaySound( "slap" );
-				}
-			}
-			Logging.TellAll($"{Command.CallerName} slapped {Logging.FormatClients(targets)}!" );
-		}
-
 		[Command("launch"), Permission("breaker.launch")]
 		public static void Launch( IClient[] targets, float force = 768f)
 		{

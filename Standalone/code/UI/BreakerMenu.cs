@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Breaker.UI
+namespace Breaker.Addon.UI
 {
 	public partial class BreakerMenu : Panel
 	{
