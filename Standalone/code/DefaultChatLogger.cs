@@ -27,7 +27,8 @@ namespace Breaker
 			else if ( type == MessageType.Announcement )
 				message = "[ANNOUNCEMENT] " + message;
 
-			ChatBox.AddInformation( message, AddonInformation.ICON );
+			//ChatBox.AddInformation( message, AddonInformation.ICON );
+			ConsoleSystem.Run( "chat_addinfo", message, AddonInformation.ICON );
 		}
 	}
 }

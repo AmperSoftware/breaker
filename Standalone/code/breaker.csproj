@@ -9,6 +9,7 @@
 		<NoWarn>1701;1702;1591;</NoWarn>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DefineConstants>SANDBOX;ADDON;DEBUG</DefineConstants>
+		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,24 +29,24 @@
 	</ItemGroup>
 
   <PropertyGroup>
-	<OutputPath>..\..\../.vs/output/</OutputPath>
-	<DocumentationFile>..\..\../.vs/output/breaker.xml</DocumentationFile>
+	<OutputPath>..\..\..\../.vs/output/</OutputPath>
+	<DocumentationFile>..\..\..\../.vs/output/breaker.xml</DocumentationFile>
 	<RootNamespace>Breaker</RootNamespace>
 	<Nullable>disable</Nullable>
   </PropertyGroup>
 
 	<ItemGroup>
-		<Analyzer Include="..\..\..\bin\managed\Sandbox.Generator.dll"/>
-		<Reference Include="..\..\..\bin\managed/Sandbox.System.dll" />
-		<Reference Include="..\..\..\bin\managed/Sandbox.Engine.dll" />
-		<Reference Include="..\..\..\bin\managed/Sandbox.Game.dll" />
-		<Reference Include="..\..\..\bin\managed/Sandbox.Event.dll" />
-		<Reference Include="..\..\..\bin\managed/Sandbox.Bind.dll" />
-		<Reference Include="..\..\..\bin\managed/Sandbox.Reflection.dll" />
+		<Analyzer Include="..\..\..\..\bin\managed\Sandbox.Generator.dll"/>
+		<Reference Include="..\..\..\..\bin\managed/Sandbox.System.dll" />
+		<Reference Include="..\..\..\..\bin\managed/Sandbox.Engine.dll" />
+		<Reference Include="..\..\..\..\bin\managed/Sandbox.Game.dll" />
+		<Reference Include="..\..\..\..\bin\managed/Sandbox.Event.dll" />
+		<Reference Include="..\..\..\..\bin\managed/Sandbox.Bind.dll" />
+		<Reference Include="..\..\..\..\bin\managed/Sandbox.Reflection.dll" />
 	</ItemGroup>
 
   <ItemGroup>
-		<ProjectReference Include="B:\SteamLibrary\steamapps\common\sbox\addons\base\code\Base.csproj" />
+		<ProjectReference Include="B:\SteamLibrary\steamapps\common\sbox\addons\base\code\Base Library.csproj" />
 
   </ItemGroup>
 

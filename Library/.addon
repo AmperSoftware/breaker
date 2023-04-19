@@ -1,0 +1,18 @@
+{
+  "Title": "Breaker - Admin System",
+  "Type": "library",
+  "Org": "local",
+  "Ident": "breaker_lib",
+  "Tags": null,
+  "Schema": 1,
+  "HasAssets": true,
+  "AssetsPath": "",
+  "ResourcePaths": null,
+  "HasCode": true,
+  "CodePath": ".",
+  "PackageReferences": [],
+  "EditorReferences": null,
+  "Metadata": {
+    "ProjectTemplate": null
+  }
+}
