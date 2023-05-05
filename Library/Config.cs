@@ -38,7 +38,7 @@ namespace Breaker
 				configfs.CreateDirectory( "breaker" );
 			fs = configfs.CreateSubSystem( "breaker" );
 
-			Event.Run( BRKEvent.CONFIG_LOADED_EVENT );
+			Event.Run( BRKEvent.ConfigLoaded );
 		}
 
 		public static void Save()

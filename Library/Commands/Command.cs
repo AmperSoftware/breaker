@@ -156,9 +156,10 @@ namespace Breaker
 		}
 
 		#region Networking
-		[BRKEvent.PlayerJoined]
-		static void OnClientJoin(IClient client)
+		[GameEvent.Server.ClientJoined]
+		static void OnClientJoin( ClientJoinedEvent ev )
 		{
+			var client = ev.Client;
 			foreach(var kv in commands)
 			{
 				var cmd = kv.Value;

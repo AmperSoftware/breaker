@@ -24,7 +24,9 @@
 	  <AdditionalFiles Include="**/*.razor" />
 	</ItemGroup>
 
+
 	<ItemGroup>
+		<Using Include="Sandbox.Internal.GlobalGameNamespace" Static="true" />
 	</ItemGroup>
 
   <PropertyGroup>

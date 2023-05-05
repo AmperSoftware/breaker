@@ -112,9 +112,8 @@ namespace Breaker
 			return cl.IsListenServerHost || IsWhitelisted( cl.SteamId );
 		}
 
-		[BRKEvent.PlayerJoined]
-		[BRKEvent.PlayerLeft]
-		private static void CheckPlayers()
+		[GameEvent.Server.ClientJoined]
+		private static void CheckPlayers( ClientJoinedEvent ev )
 		{
 			if(!Console.Vars.breaker_whitelist_enabled)
 				return;

@@ -116,9 +116,10 @@ namespace Breaker.Commands
 			return bans.Any( b => b.SteamId == cl.SteamId && (b.IsPermanent || b.GetEndTime() > DateTime.Now) );
 		}
 
-		[BRKEvent.PlayerJoined]
-		public static void ClientJoined(IClient cl)
+		[GameEvent.Server.ClientJoined]
+		public static void ClientJoined( ClientJoinedEvent ev )
 		{
+			var cl = ev.Client;
 			if(IsBanned(cl))
 				cl.Kick();
 		}
