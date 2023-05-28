@@ -1,0 +1,29 @@
+{
+  "Title": "Breaker - Admin System",
+  "Type": "library",
+  "Org": "amper",
+  "Ident": "breaker_lib",
+  "Tags": null,
+  "Schema": 1,
+  "HasAssets": true,
+  "AssetsPath": "",
+  "ResourcePaths": null,
+  "HasCode": true,
+  "CodePath": ".",
+  "PackageReferences": [],
+  "EditorReferences": null,
+  "Metadata": {
+    "ProjectTemplate": null,
+    "CsProjName": "",
+    "Compiler": {
+      "RootNamespace": "Breaker",
+      "DefineConstants": "SANDBOX;ADDON;DEBUG",
+      "NoWarn": "1701;1702;1591;",
+      "References": []
+    },
+    "Summary": "Server Administration Library for your Games",
+    "Description": "Adds whitelists, reserved slots and moderation capabilities to your games (Can come in handy during playtests)",
+    "Public": true,
+    "ReplaceTags": "administration whitelist slots reserved ban kick admin"
+  }
+}

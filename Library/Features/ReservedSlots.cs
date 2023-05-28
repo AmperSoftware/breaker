@@ -17,11 +17,13 @@ namespace Breaker
 			return Console.Vars.breaker_reserved_slots > 0;
 		}
 
-		[BRKEvent.PlayerJoined]
-		private static void PlayerJoined(IClient cl)
+		[GameEvent.Server.ClientJoined]
+		private static void PlayerJoined( ClientJoinedEvent ev )
 		{
 			if ( !Enabled() )
 				return;
+
+			var cl = ev.Client;
 
 			Debug.Log( $"{cl} joined with {currentPlayers} players and {publicSlots}/{Game.Server.MaxPlayers} slots");
 			if ( currentPlayers > publicSlots && !cl.HasPermission( RESERVED_SLOT_PERMISSION ) )

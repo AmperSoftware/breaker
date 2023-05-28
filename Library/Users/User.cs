@@ -119,17 +119,14 @@ namespace Breaker
 		}
 
 		
-		[BRKEvent.PlayerJoined]
-		[BRKEvent.PlayerLeft]
-		static void Tick()
+		[GameEvent.Server.ClientJoined]
+		static void ClientJoin( ClientJoinedEvent ev )
 		{
 			// Check for new clients
-			foreach ( var cl in Game.Clients )
+			var cl = ev.Client;
+			if ( !Exists( cl ) )
 			{
-				if ( !Exists( cl ) )
-				{
-					Add( cl );
-				}
+				Add( cl );
 			}
 		}
 	}

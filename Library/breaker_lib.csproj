@@ -3,25 +3,27 @@
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<AssemblyName>breaker</AssemblyName>
-		<PackageId>breaker</PackageId>
+		<AssemblyName>breaker_lib</AssemblyName>
+		<PackageId>breaker_lib</PackageId>
 		<LangVersion>11</LangVersion>
 		<NoWarn>1701;1702;1591;</NoWarn>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DefineConstants>SANDBOX;ADDON;DEBUG</DefineConstants>
+		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Update="**\*.scss" DependentUpon="%(Filename).cs" />
-		<None Update="**\*.css" DependentUpon="%(Filename).cs" />
-		<None Update="**\*.sass" DependentUpon="%(Filename).cs" />
-		<None Update="**\*.html" DependentUpon="%(Filename).cs" />
-		<None Update="**\*.htm" DependentUpon="%(Filename).cs" />
+		
+		<None Update="**\*.cs.scss" DependentUpon="%(Filename)" />
+		<Compile Update="**\*.razor.cs" DependentUpon="%(Filename)" />
+		<None Update="**\*.razor.scss" DependentUpon="%(Filename)" />
+
 	</ItemGroup>
 
 	<ItemGroup>
 	  <AdditionalFiles Include="**/*.razor" />
 	</ItemGroup>
+
 
 	<ItemGroup>
 		<Using Include="Sandbox.Internal.GlobalGameNamespace" Static="true" />
@@ -29,7 +31,7 @@
 
   <PropertyGroup>
 	<OutputPath>..\..\../.vs/output/</OutputPath>
-	<DocumentationFile>..\..\../.vs/output/breaker.xml</DocumentationFile>
+	<DocumentationFile>..\..\../.vs/output/breaker_lib.xml</DocumentationFile>
 	<RootNamespace>Breaker</RootNamespace>
 	<Nullable>disable</Nullable>
   </PropertyGroup>
@@ -45,7 +47,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-		<ProjectReference Include="B:\SteamLibrary\steamapps\common\sbox\addons\base\code\Base.csproj" />
 
   </ItemGroup>
 

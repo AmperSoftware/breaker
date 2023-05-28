@@ -15,7 +15,7 @@ namespace Breaker
 		private static BaseFileSystem fs;
 		public static Config Instance { get; private set; } = new();
 
-		[Event.Entity.PostSpawn]
+		[GameEvent.Entity.PostSpawn]
 		[Event.Hotload]
 		public static void Load()
 		{
@@ -38,7 +38,7 @@ namespace Breaker
 				configfs.CreateDirectory( "breaker" );
 			fs = configfs.CreateSubSystem( "breaker" );
 
-			Event.Run( BRKEvent.CONFIG_LOADED_EVENT );
+			Event.Run( BRKEvent.ConfigLoaded );
 		}
 
 		public static void Save()
