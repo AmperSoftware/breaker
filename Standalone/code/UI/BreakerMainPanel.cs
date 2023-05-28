@@ -1,5 +1,4 @@
-﻿using Breaker.Addon.UI;
-using Sandbox;
+﻿using Sandbox;
 using Sandbox.UI;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Breaker.Addon;
+namespace Breaker.Addon.UI;
 
 public partial class BreakerMainPanel : Panel
 {

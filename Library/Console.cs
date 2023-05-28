@@ -21,6 +21,12 @@ namespace Breaker
 			[ConCmd.Server( "brk" )]
 			public static void RunCommand( string command, string p1 = "", string p2 = "", string p3 = "", string p4 = "", string p5 = "", string p6 = "" )
 			{
+				if ( !Vars.breaker_enabled )
+				{
+					Logging.TellClient( ConsoleSystem.Caller, "Breaker is disabled!", MessageType.Error );
+					return;
+				}
+
 				var parameters = new string[] { p1, p2, p3, p4, p5, p6 };
 				Command.Execute( command, ConsoleSystem.Caller, parameters.Where( p => !string.IsNullOrEmpty( p ) ).ToArray() );
 			}
@@ -130,6 +136,7 @@ namespace Breaker
 		/// </summary>
 		public static class Vars
 		{
+			[ConVar.Replicated] public static bool breaker_enabled { get; set; } = true;
 			[ConVar.Replicated] public static int breaker_reserved_slots { get; set; } = 0;
 			[ConVar.Replicated] public static bool breaker_whitelist_enabled { get; set; } = false;
 			[ConVar.Replicated] public static bool breaker_debug { get; set; } = false;
