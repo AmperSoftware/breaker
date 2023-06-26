@@ -11,7 +11,7 @@ namespace Breaker
 	{
 		#region Persistent Config
 		const string CONFIG_FILE = "breaker.config";
-		private static readonly BaseFileSystem configfs = FileSystem.OrganizationData;
+		private static BaseFileSystem configfs => FileSystem.OrganizationData;
 		private static BaseFileSystem fs;
 		public static Config Instance { get; private set; } = new();
 
@@ -19,6 +19,9 @@ namespace Breaker
 		[Event.Hotload]
 		public static void Load()
 		{
+			if ( !Game.InGame ) return;
+			if ( configfs == null ) return;
+
 			if ( !configfs.FileExists( CONFIG_FILE ) )
 			{
 				Debug.Log( "Config file not found, creating new one." );
