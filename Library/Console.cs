@@ -140,6 +140,6 @@ public static class Console
 		[ConVar.Replicated] public static int breaker_reserved_slots { get; set; } = 0;
 		[ConVar.Replicated] public static bool breaker_whitelist_enabled { get; set; } = false;
 		[ConVar.Replicated] public static bool breaker_debug { get; set; } = false;
-		[ConVar.Replicated] public static bool breaker_autogen_builtin_commands { get; set; } = true;
+		[ConVar.Replicated] public static bool breaker_autogen_builtin_commands { get; set; } = false;
 	}
 }

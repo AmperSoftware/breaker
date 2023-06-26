@@ -106,8 +106,10 @@ public static partial class Command
 			var builtinAttrib = method.GetCustomAttribute<ConCmd.AdminAttribute>();
 			if(builtinAttrib != null)
 			{
-				string attributeName = builtinAttrib.Name ?? method.Name.ToLower();
-				attribute = new CommandAttribute( attributeName ) { Description = builtinAttrib.Help, GeneratedFrom = type.Namespace };
+				string attributeName = builtinAttrib.Name ?? method.Name.ToLowerInvariant();
+				string source = type.Namespace?.ToLowerInvariant() ?? type.Name.ToLowerInvariant();
+				attribute = new CommandAttribute( attributeName ) { Description = builtinAttrib.Help, GeneratedFrom = source };
+				Log.Info( attribute.IsGenerated );
 			}
 		}
 
@@ -203,7 +205,7 @@ public static partial class Command
 
 		if ( cmd.Attribute.IsGenerated )
 		{
-			return new PermissionAttribute[] { new($"other.{cmd.Attribute.GeneratedFrom.ToLowerInvariant()}.{name}") };
+			return new PermissionAttribute[] { new($"other.{cmd.Attribute.GeneratedFrom}.{name}") };
 		}
 
 		return cmd.Method.Attributes.OfType<PermissionAttribute>().ToArray();
@@ -226,7 +228,7 @@ public class CommandAttribute : Attribute
 	public string[] Aliases { get; }
 	public string Description { get; set; }
 	internal string GeneratedFrom = "";
-	internal bool IsGenerated => !string.IsNullOrWhiteSpace( GeneratedFrom );
+	internal bool IsGenerated => !string.IsNullOrEmpty( GeneratedFrom );
 	public CommandAttribute(string key, params string[] aliases)
 	{
 		if ( string.IsNullOrEmpty( key ) )

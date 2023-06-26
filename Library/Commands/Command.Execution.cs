@@ -26,7 +26,7 @@ namespace Breaker
 			}
 
 			var method = info.Method;
-			var permissions = info.Method.Attributes.OfType<PermissionAttribute>();
+			var permissions = Permissions( command );
 			if ( permissions.Any() )
 			{
 				foreach ( var perm in permissions.Where( p => !p.ManualEnforcement ) )
@@ -36,7 +36,6 @@ namespace Breaker
 						Logging.TellClient( caller, $"Tried to execute command {command} but the client doesn't have the permission {perm.Permission}!", MessageType.Error );
 						return;
 					}
-
 				}
 			}
 			Debug.Log( "Client has all required permissions" );
